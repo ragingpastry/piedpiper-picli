@@ -23,12 +23,12 @@ class Flake8(base.Base):
 
     @property
     def url(self):
-        return self._base_config._config['flake8']['url']
+        return self._base_config._config[f'{self.name}']['url']
 
     def zip_files(self, destination):
-        zip_file = zipfile.ZipFile(f'{destination}/flake8.zip', 'w', zipfile.ZIP_DEFLATED)
+        zip_file = zipfile.ZipFile(f'{destination}/{self.name}.zip', 'w', zipfile.ZIP_DEFLATED)
         for file in self._config.files:
-            if file['linter'] == 'flake8':
+            if file['linter'] == f'{self.name}':
                 zip_file.write(file['file'])
         zip_file.close()
 
