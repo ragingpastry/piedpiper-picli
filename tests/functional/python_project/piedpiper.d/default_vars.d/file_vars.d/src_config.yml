@@ -1,0 +1,5 @@
+---
+pi_lint:
+  file: "src/config.py"
+  linter: "noop"
+

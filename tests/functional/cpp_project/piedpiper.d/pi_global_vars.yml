@@ -1,0 +1,2 @@
+pi_global_vars:
+  vars_dir: "default_vars.d"

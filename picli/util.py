@@ -1,6 +1,7 @@
 import anyconfig
 from typing import Dict
 import re
+import yaml
 
 
 def merge_dicts(a: Dict, b: Dict) -> Dict:
@@ -30,21 +31,22 @@ def merge_dicts(a: Dict, b: Dict) -> Dict:
 
     return a
 
+    return wrapper
 def render_runvars():
     pass
+
 
 def camelize(string):
     return re.sub(r"(?:^|_)(.)", lambda m: m.group(1).upper(), string)
 
-def memoize(function):
-    memo = {}
 
-    def wrapper(*args, **kwargs):
-        if args not in memo:
-            rv = function(*args, **kwargs)
-            memo[args] = rv
+def safe_load(string):
+    try:
+        return yaml.safe_load(string) or {}
+    except yaml.scanner.ScannerError as e:
+        print(e)
 
-            return rv
-        return memo[args]
 
-    return wrapper
+def safe_load_file(filename):
+    with open(filename) as file:
+        return safe_load(file)

@@ -1,0 +1,4 @@
+---
+pi_lint:
+  name: "*.cc"
+  linter: cpplint
