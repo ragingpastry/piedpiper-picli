@@ -1,12 +1,13 @@
 image: python:3.6
 
 stages:
+  - lint
   - build
   - generate_docker_image_push_to_nexus
 
 include:
-  - project: myinclude
-    file: ididntincludepiedpipervalidation
+  - project: piedpiper/validation
+    file: .gitlab-ci.yml
 
 
 variables:

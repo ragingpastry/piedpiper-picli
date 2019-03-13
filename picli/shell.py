@@ -7,7 +7,7 @@ from picli import command
 @click.option(
     '--config',
     '-c',
-    default='./picli.yml',
+    default='piedpiper.d/pi_global_vars.yml',
     help='The PiCli configuration file to use'
 )
 @click.pass_context

@@ -23,6 +23,6 @@ class Validate(base.Base):
 @click.pass_context
 def validate(context):
     config_file = context.obj.get('args')['config']
-    sequence = base.get_sequence()
+    sequence = base.get_sequence('validate')
     for action in sequence:
         base.execute_subcommand(config_file, action)

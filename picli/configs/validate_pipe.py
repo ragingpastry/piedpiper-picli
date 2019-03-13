@@ -19,10 +19,18 @@ class ValidatePipeConfig(BasePipeConfig):
     def name(self):
         return 'validate'
 
+    @property
+    def policy_checks_enforcing(self):
+        return self._pipe_config['pi_validate_pipe_vars']['policy_checks']['enforcing']
+
+    @property
+    def policy_checks_enabled(self):
+        return self._pipe_config['pi_validate_pipe_vars']['policy_checks']['enabled']
+
     def _validate(self):
         errors = validate_pipeconfig_schema.validate(self._pipe_config)
         if errors != True:
-            msg = f"Failed to validate Lint Pipe Config. \n\n{errors.messages}"
+            msg = f"Failed to validate Validate Pipe Config. \n\n{errors.messages}"
             util.sysexit_with_message(msg)
 
     def read_ci_provider_config_file(self):

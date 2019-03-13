@@ -76,6 +76,8 @@ def sysexit_with_message(msg, code=1):
 
 def find_piedpiper_dir(base_config_file):
     base_dir = os.path.dirname(os.path.dirname(base_config_file))
+    if not base_dir:
+        base_dir = '.'
     return base_dir
 
 

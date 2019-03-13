@@ -31,7 +31,7 @@ class Lint(base.Base):
 @click.pass_context
 def lint(context):
     config_file = context.obj.get('args')['config']
-    sequence = base.get_sequence()
+    sequence = base.get_sequence('lint')
     for action in sequence:
         base.execute_subcommand(config_file, action)
 

@@ -28,9 +28,16 @@ def execute_subcommand(config, subcommand):
     return command(config).execute()
 
 
-def get_sequence():
+def get_sequence(step):
 
-    return [
-        'validate',
-        'lint'
-    ]
+    if step == 'validate':
+        return [
+            'validate'
+        ]
+    elif step == 'lint':
+        return [
+            'validate',
+            'lint'
+        ]
+    else:
+        util.sysexit_with_message(f"picli sequence not found for {step}")

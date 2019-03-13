@@ -1,5 +1,6 @@
 import tempfile
 import requests
+import json
 import zipfile
 
 from picli import logger
@@ -40,7 +41,23 @@ class Validator(object):
             files = [('files', open(zip_file.filename, 'rb'))]
             try:
                 r = requests.post(self.url, files=files)
-                LOG.warn(r.text)
+                results = r.json()
+                result_list = []
+                for result in results.values():
+                    for stage_result in result:
+                        for value in stage_result.values():
+                            if value == True:
+                                continue
+                            else:
+                                result_list.append(stage_result)
+                if len(result_list):
+                    if self._base_config.policy_checks_enforcing:
+                        util.sysexit_with_message(
+                            json.dumps(result_list, indent=4)
+                        )
+                    else:
+                        LOG.warn(json.dumps(result_list, indent=4))
+                LOG.success("Validation completed successfully.")
             except requests.exceptions.RequestException as e:
                 message = f"Failed to execute validator. \n\n{e}"
                 util.sysexit_with_message(message)
