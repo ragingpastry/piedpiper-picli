@@ -22,7 +22,7 @@ class BaseConfig(object):
 
     def _validate(self):
         errors = base_schema.validate(self._config)
-        if errors != True:
+        if errors:
             msg = f"Failed to validate. \n\n{errors.messages}"
             util.sysexit_with_message(msg)
 

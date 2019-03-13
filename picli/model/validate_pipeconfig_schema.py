@@ -22,8 +22,8 @@ class ValidatePipeConfigSchema(Schema):
 def validate(config):
     schema = ValidatePipeConfigSchema(unknown=RAISE)
     try:
-       _ = schema.load(config)
-       result = True
+        _ = schema.load(config)
+        result = None
     except ValidationError as err:
         result = err
     return result

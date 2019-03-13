@@ -42,8 +42,6 @@ def merge_dicts(a: Dict, b: Dict) -> Dict:
 
     return a
 
-    return wrapper
-
 
 def render_runvars():
     pass
@@ -79,12 +77,3 @@ def find_piedpiper_dir(base_config_file):
     if not base_dir:
         base_dir = '.'
     return base_dir
-
-
-def str_to_bool(string):
-    if string == 'True' or string == 'true':
-         return True
-    elif string == 'False' or string == 'false':
-         return False
-    else:
-         raise ValueError # evil ValueError that doesn't tell you what the wrong value was

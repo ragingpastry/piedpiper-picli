@@ -29,7 +29,7 @@ class ValidatePipeConfig(BasePipeConfig):
 
     def _validate(self):
         errors = validate_pipeconfig_schema.validate(self._pipe_config)
-        if errors != True:
+        if errors:
             msg = f"Failed to validate Validate Pipe Config. \n\n{errors.messages}"
             util.sysexit_with_message(msg)
 

@@ -16,8 +16,8 @@ class LintPipeConfigSchema(Schema):
 def validate(config):
     schema = LintPipeConfigSchema(unknown=RAISE)
     try:
-       _ = schema.load(config)
-       result = True
+        _ = schema.load(config)
+        result = None
     except ValidationError as err:
         result = err
     return result

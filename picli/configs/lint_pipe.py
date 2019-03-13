@@ -18,7 +18,7 @@ class LintPipeConfig(BasePipeConfig):
 
     def _validate(self):
         errors = lint_pipeconfig_schema.validate(self._pipe_config)
-        if errors != True:
+        if errors:
             msg = f"Failed to validate Lint Pipe Config. \n\n{errors.messages}"
             util.sysexit_with_message(msg)
 
