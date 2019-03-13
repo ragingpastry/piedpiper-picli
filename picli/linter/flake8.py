@@ -1,6 +1,3 @@
-import requests
-import tempfile
-
 from picli.linter import base
 
 

@@ -1,0 +1,5 @@
+pi_global_vars:
+  project_name: "cpp_and_python_project"
+  ci_provider: "gitlab-ci"
+  vars_dir: "default_vars.d"
+  version: "0.0.0"

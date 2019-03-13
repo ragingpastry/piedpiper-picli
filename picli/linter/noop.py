@@ -1,4 +1,7 @@
 from picli.linter import base
+from picli import logger
+
+LOG = logger.get_logger(__name__)
 
 
 class Noop(base.Base):
@@ -19,4 +22,8 @@ class Noop(base.Base):
         pass
 
     def execute(self):
-        print('Noop executed on file.')
+        LOG.info(f"Executing linter {self.name}")
+        for file in self._config.files:
+            if file['linter'] == self.name:
+                message = f'Executing {self.name} on {file["file"]}'
+                LOG.success(message)

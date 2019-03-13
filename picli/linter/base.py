@@ -3,7 +3,10 @@ import requests
 import tempfile
 import zipfile
 
+from picli import logger
 from picli import util
+
+LOG = logger.get_logger(__name__)
 
 
 class Base(object):
@@ -40,14 +43,16 @@ class Base(object):
 
         :return:  None
         """
+        LOG.info(f"Executing linter {self.name}")
         with tempfile.TemporaryDirectory() as temp_dir:
             zip_file = self.zip_files(temp_dir)
             files = [('files', open(zip_file.filename, 'rb'))]
             try:
                 r = requests.post(self.url, files=files)
-                print(r.text)
+                LOG.warn(r.text)
             except requests.exceptions.RequestException as e:
-                print(e)
+                message = f"Failed to execute linter {self.name}. \n\n{e}"
+                util.sysexit_with_message(message)
 
     @property
     @abc.abstractmethod
@@ -59,7 +64,7 @@ class Base(object):
         zip_file = zipfile.ZipFile(f'{destination}/{self.name}.zip', 'w', zipfile.ZIP_DEFLATED)
         for file in self._config.files:
             if file['linter'] == f'{self.name}':
-                zip_file.write(file['file'])
+                zip_file.write(f"{self._base_config._base_config.piedpiper_dir}/{file['file']}", file['file'])
         zip_file.close()
 
         return zip_file

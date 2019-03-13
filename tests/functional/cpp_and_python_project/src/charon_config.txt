@@ -1,0 +1,19 @@
+scanner:
+  name: nessus
+  compliance_threshold: '49'
+  authentication:
+    url: "https://nessus.rinconres.com:8834"
+    access_key: a0acb599068ef070065499656b37e08db652f61baa376d9fb10db3db1b53cf42
+    secret_key: 796e56ef313e382b19864f5ed73b7c3d86e881c23088e403232009599e0de9a8
+  policy_id: '1261'
+  verify: False
+cloud:
+  name: openstack
+  network_id: blah123
+  username: centos
+notification:
+  name: mattermost
+  authentication:
+    access_token: "b5h5uhyj4fbi7pk4udjdxnd85r"
+  url: https://mattermost.rinconres.com/api/v4
+  verify: False

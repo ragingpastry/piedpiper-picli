@@ -1,6 +1,6 @@
 venv/
 dist/
 build/
-*.egg.info/
+*.egg-info/
 .idea/
 .mypy_cache/

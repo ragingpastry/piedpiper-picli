@@ -1,7 +1,18 @@
 import anyconfig
 from typing import Dict
+import os
 import re
+import sys
 import yaml
+
+from picli.logger import get_logger
+
+LOG = get_logger(__name__)
+
+
+class SafeDumper(yaml.SafeDumper):
+    def increase_indent(self, flow=False, indentless=False):
+        return super(SafeDumper, self).increase_indent(flow, False)
 
 
 def merge_dicts(a: Dict, b: Dict) -> Dict:
@@ -32,6 +43,8 @@ def merge_dicts(a: Dict, b: Dict) -> Dict:
     return a
 
     return wrapper
+
+
 def render_runvars():
     pass
 
@@ -50,3 +63,26 @@ def safe_load(string):
 def safe_load_file(filename):
     with open(filename) as file:
         return safe_load(file)
+
+
+def safe_dump(data):
+    return yaml.dump(data, Dumper=SafeDumper, default_flow_style=False, explicit_start=True)
+
+
+def sysexit_with_message(msg, code=1):
+    LOG.critical(msg)
+    sys.exit(code)
+
+
+def find_piedpiper_dir(base_config_file):
+    base_dir = os.path.dirname(os.path.dirname(base_config_file))
+    return base_dir
+
+
+def str_to_bool(string):
+    if string == 'True' or string == 'true':
+         return True
+    elif string == 'False' or string == 'false':
+         return False
+    else:
+         raise ValueError # evil ValueError that doesn't tell you what the wrong value was

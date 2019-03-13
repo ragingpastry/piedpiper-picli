@@ -1,4 +1,6 @@
 anyconfig
+colorama
 click
+marshmallow>=3.0.0rc4
 PyYAML
 requests
