@@ -13,11 +13,13 @@ class PiGlobalVarsSchema(Schema):
 
     @validates
     def validate_ci_provider(self, value):
-        supported_ci_providers = [
+        allowed_ci_providers = [
             'gitlab-ci'
         ]
-        if value not in supported_ci_providers:
-            raise ValueError(f'ci_provider must be one of {supported_ci_providers}. You supplied {value}')
+        if value not in allowed_ci_providers:
+            raise ValueError(
+                f'ci_provider must be one of {allowed_ci_providers}. You supplied {value}'
+            )
 
 
 class BaseSchema(Schema):

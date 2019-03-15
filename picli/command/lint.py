@@ -19,8 +19,13 @@ class Lint(base.Base):
             linters = set()
             for file in lint_pipe_config.run_config.files:
                 linters.add(file['linter'])
-            for linter in linters:
-                linter_module = getattr(importlib.import_module(f'picli.linter.{linter}'), f'{util.camelize(linter)}')
+            for linter in sorted(linters):
+                linter_module = getattr(
+                    importlib.import_module(
+                        f'picli.linter.{linter}'
+                    ),
+                    f'{util.camelize(linter)}'
+                )
                 linter = linter_module(lint_pipe_config, lint_pipe_config.run_config)
                 linter.execute()
         else:
@@ -34,4 +39,3 @@ def lint(context):
     sequence = base.get_sequence('lint')
     for action in sequence:
         base.execute_subcommand(config_file, action)
-

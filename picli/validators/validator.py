@@ -10,8 +10,23 @@ LOG = logger.get_logger(__name__)
 
 
 class Validator(object):
+    """Validation object to perform checks against a PiCli run.
+
+    Creates a zip of the configuration files supplied by
+    the base_config object provided during initialization. This config
+    is written to a run_vars.yml file which is sent to an external validation
+    function.
+    We then parse the results of the validation. If the policy checks are
+    set to enforcing then we will exit, if they are set to permissive then we
+    will warn the user and continue with the execution.
+
+    """
     def __init__(self, base_config):
-        self._base_config = base_config
+        """
+        Initialize the Validator.
+        :param base_config: ValidatePipeConfig object
+        """
+        self.base_config = base_config
 
     @property
     def name(self):
@@ -19,16 +34,23 @@ class Validator(object):
 
     @property
     def url(self):
-        return self._base_config.endpoint + f'/piedpiper-{self.name}-function'
+        return self.base_config.endpoint + f'/piedpiper-{self.name}-function'
 
     @property
     def enabled(self):
-        return self._base_config.run_pipe
+        return self.base_config.run_pipe
 
     def zip_files(self, destination):
+        """
+        Create a zipfile containing run variables of PiCli.
+        :param destination: Directory to write zipfile to
+        :return: ZipFile
+        """
         try:
-            zip_file = zipfile.ZipFile(f'{destination}/validation.zip', 'w', zipfile.ZIP_DEFLATED)
-            zip_file.writestr("run_vars.yml", self._base_config.dump_configs())
+            zip_file = zipfile.ZipFile(
+                f'{destination}/validation.zip', 'w', zipfile.ZIP_DEFLATED
+            )
+            zip_file.writestr("run_vars.yml", self.base_config.dump_configs())
             zip_file.close()
             return zip_file
         except Exception as e:
@@ -42,23 +64,31 @@ class Validator(object):
             try:
                 r = requests.post(self.url, files=files)
                 results = r.json()
-                result_list = []
-                for result in results.values():
-                    for stage_result in result:
-                        for value in stage_result.values():
-                            if value == True:
-                                continue
-                            else:
-                                result_list.append(stage_result)
-                if len(result_list):
-                    if self._base_config.policy_checks_enforcing:
-                        util.sysexit_with_message(
-                            json.dumps(result_list, indent=4)
-                        )
-                    else:
-                        LOG.warn(json.dumps(result_list, indent=4))
-                LOG.success("Validation completed successfully.")
+                self._parse_results(results)
             except requests.exceptions.RequestException as e:
                 message = f"Failed to execute validator. \n\n{e}"
                 util.sysexit_with_message(message)
 
+    def _parse_results(self, results):
+        """
+        Parse results returned from the execute request.
+        Builds a list of errors found in the JSON-object
+        and
+
+        :param results: JSON-object from execute
+        :return: None
+        """
+        result_list = []
+        for result in results.values():
+            for stage_result in result:
+                for value in stage_result.values():
+                    if value['errors']:
+                        result_list.append(stage_result)
+        if len(result_list):
+            if self.base_config.policy_checks_enforcing:
+                util.sysexit_with_message(
+                    json.dumps(result_list, indent=4)
+                )
+            else:
+                LOG.warn(json.dumps(result_list, indent=4))
+        LOG.success("Validation completed successfully.")

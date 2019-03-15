@@ -10,11 +10,20 @@ LOG = logger.get_logger(__name__)
 
 
 class Base(object):
+    """Base Lint object
+    Defines the set of behaviours that all linters
+    must share.
+
+    All linters must have an execute method which will be
+    called by PiCli's command module. The default implementation
+    is found here and can be used by subclasses.
+
+    """
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, base_config, config):
-        self._base_config = base_config
-        self._config = config
+        self.config = base_config
+        self.run_config = config
 
     @property
     @abc.abstractmethod
@@ -39,7 +48,11 @@ class Base(object):
     @abc.abstractmethod
     def execute(self):
         """
-        Executes command
+        Executes the linter.
+
+        This default implementation will zip all files in
+        the configuration.files list and send that zipfile
+        across the network to the specified linter function.
 
         :return:  None
         """
@@ -57,23 +70,45 @@ class Base(object):
     @property
     @abc.abstractmethod
     def url(self):
-        return self._base_config.endpoint + f'/piedpiper-{self.name}-function'
+        """
+        Defines the URL of the function which the execute method will hit
+        :return: string
+        """
+        return self.config.endpoint + f'/piedpiper-{self.name}-function'
 
     @abc.abstractmethod
     def zip_files(self, destination):
-        zip_file = zipfile.ZipFile(f'{destination}/{self.name}.zip', 'w', zipfile.ZIP_DEFLATED)
-        for file in self._config.files:
+        """
+        Zips all files in the run_config.files list if they match
+        the linter.
+        :param destination: Path to create the zipfile in
+        :return: ZipFile
+        """
+        zip_file = zipfile.ZipFile(
+            f'{destination}/{self.name}.zip', 'w', zipfile.ZIP_DEFLATED
+        )
+        for file in self.run_config.files:
             if file['linter'] == f'{self.name}':
-                zip_file.write(f"{self._base_config._base_config.piedpiper_dir}/{file['file']}", file['file'])
+                zip_file.write(
+                    f"{self.config.base_config.base_dir}/{file['file']}",
+                    file['file']
+                )
         zip_file.close()
 
         return zip_file
 
     @property
     def enabled(self):
-        return self._config.run_pipe
+        return self.run_config.run_pipe
 
     @property
     def options(self):
-        return util.merge_dicts(self.default_options, self._config.config['linter']['options'])
+        """
+        Merges default options with provided linter configuration
+        options.
+        FIXME: Not currently used.
 
+        :return: dict
+        """
+        return util.merge_dicts(self.default_options,
+                                self.run_config.config['linter']['options'])

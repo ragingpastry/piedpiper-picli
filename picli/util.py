@@ -64,7 +64,9 @@ def safe_load_file(filename):
 
 
 def safe_dump(data):
-    return yaml.dump(data, Dumper=SafeDumper, default_flow_style=False, explicit_start=True)
+    return yaml.dump(data, Dumper=SafeDumper,
+                     default_flow_style=False,
+                     explicit_start=True)
 
 
 def sysexit_with_message(msg, code=1):
@@ -72,7 +74,15 @@ def sysexit_with_message(msg, code=1):
     sys.exit(code)
 
 
-def find_piedpiper_dir(base_config_file):
+def find_base_dir(base_config_file):
+    """
+    Find base-level directory of the repository given
+    a pipedpiper global_vars configuration file.
+    We basically hardcode this to be two levels up from the
+    configuration file
+    :param base_config_file:
+    :return: string
+    """
     base_dir = os.path.dirname(os.path.dirname(base_config_file))
     if not base_dir:
         base_dir = '.'
