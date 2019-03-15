@@ -59,8 +59,12 @@ def safe_load(string):
 
 
 def safe_load_file(filename):
-    with open(filename) as file:
-        return safe_load(file)
+    try:
+        with open(filename) as file:
+            return safe_load(file)
+    except EnvironmentError as e:
+        message = f"Unable to load file {filename}.\n\n{e}"
+        sysexit_with_message(message)
 
 
 def safe_dump(data):

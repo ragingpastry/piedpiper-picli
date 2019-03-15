@@ -46,18 +46,16 @@ class RunConfig(object):
                 if os.path.isdir(file):
                     continue
 
-                """
-                file:
-                  linter: flake8
-                OR
-                file:
-                linter: flake8
-                """
-                file_definition = {
-                    'file': os.path.relpath(file,
-                                              self.base_config.base_dir),
-                    'linter': group['linter']
-                }
+                try:
+                    file_definition = {
+                        'file': os.path.relpath(file,
+                                                self.base_config.base_dir),
+                        'linter': group['linter']
+                    }
+                except KeyError as e:
+                    message = f"Invalid key found in run_vars.{self.config}" \
+                              f"\n\n{e}"
+                    util.sysexit_with_message(message)
                 file_definition_list.append(file_definition)
 
             file_definitions.append(file_definition_list)

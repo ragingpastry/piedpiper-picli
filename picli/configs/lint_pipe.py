@@ -3,6 +3,7 @@ from picli.model import lint_pipeconfig_schema
 from picli import logger
 from picli import util
 
+
 LOG = logger.get_logger(__name__)
 
 

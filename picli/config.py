@@ -67,7 +67,13 @@ class BaseConfig(object):
         By default this will be {base_dir}/piedpiper.d/default_vars.d
         :return:
         """
-        return self.piedpiper_dir + self.global_vars['vars_dir']
+
+        if os.path.isdir(self.piedpiper_dir + self.global_vars['vars_dir']):
+            return self.piedpiper_dir + self.global_vars['vars_dir']
+        else:
+            message = f"Piedpiper vars directory doesn't exist in {self.piedpiper_dir}." \
+                      f"You gave {self.global_vars['vars_dir']}."
+            util.sysexit_with_message(message)
 
     @property
     def base_dir(self):
@@ -80,7 +86,12 @@ class BaseConfig(object):
 
         :return: String of path to piedpiper.d directory.
         """
-        return self.base_path + '/' + 'piedpiper.d/'
+        piedpiper_dir = self.base_path + '/' + 'piedpiper.d/'
+        if os.path.isdir(piedpiper_dir):
+            return piedpiper_dir
+        else:
+            message = f"Piedpiper directory doesn't exist in {piedpiper_dir}."
+            util.sysexit_with_message(message)
 
     @property
     def ci_provider(self):

@@ -54,24 +54,34 @@ class BasePipeConfig(object):
         """
 
         group_configs = []
+        if os.path.isdir(f'{self.base_config.vars_dir}/group_vars.d/'):
+            for root, dirs, files in os.walk(
+                    f'{self.base_config.vars_dir}/group_vars.d/'
+            ):
+                if len(files) == 0:
+                    message = f'group_vars is blank in {self.base_config.vars_dir}'
+                    util.sysexit_with_message(message)
+                for file in files:
+                    if file == 'all.yml':
+                        with open(os.path.join(root, file)) as f:
+                            group_config = f.read()
+                            group_configs.append(group_config)
+        else:
+            message = f'Failed to read group_vars in {self.base_config.vars_dir}.'
+            util.sysexit_with_message(message)
+
         for root, dirs, files in os.walk(
                 f'{self.base_config.vars_dir}/group_vars.d/'
         ):
-            for file in files:
-                if file == 'all.yml':
-                    with open(os.path.join(root, file)) as f:
-                        group_config = f.read()
-                        group_configs.append(group_config)
-        for root, dirs, files in os.walk(
-                f'{self.base_config.vars_dir}/group_vars.d/'
-        ):
+            if len(files) == 0:
+                message = f'No group_vars found in {self.base_config.vars_dir}'
+                util.sysexit_with_message(message)
             for file in files:
                 if file == 'all.yml':
                     continue
                 with open(os.path.join(root, file)) as f:
                     group_config = f.read()
                     group_configs.append(group_config)
-
         return group_configs
 
     def _read_file_vars(self):
@@ -79,13 +89,18 @@ class BasePipeConfig(object):
         Read all files in {base_dir}/piedpiper.d/{vars_dir}/files_vars.d/
         :return: iterator
         """
-        for root, dirs, files in os.walk(
-                f'{self.base_config.vars_dir}/file_vars.d/'
-        ):
-            for file in files:
-                with open(os.path.join(root, file)) as f:
-                    file_config = f.read()
-                    yield file_config
+        if os.path.isdir(f'{self.base_config.vars_dir}/file_vars.d/'):
+            for root, dirs, files in os.walk(
+                    f'{self.base_config.vars_dir}/file_vars.d/'
+            ):
+                for file in files:
+                    with open(os.path.join(root, file)) as f:
+                        file_config = f.read()
+                        yield file_config
+
+        else:
+            message = f"Failed to read file_vars.d in {self.base_config.vars_dir}/file_vars.d/."
+            util.sysexit_with_message(message)
 
     def _build_group_configs(self):
         """
