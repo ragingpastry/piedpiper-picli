@@ -1,11 +1,3 @@
-
-Installation
-------------
-0. If you have virtualenv installed then install a new virtualenv
-  a. virtualenv picli && source picli/bin/activate
-1. pip install -r requirements.txt
-2. python setup.py install
-
 ToDo:
 Document more things
 
@@ -27,6 +19,14 @@ ToDo: Document installation of OpenFaaS + functions
 
 ### Installing
 
+#### Docker Installation
+
+```
+docker build -t picli .
+docker run -it picli /bin/sh
+```
+
+#### Python installation
 ```
 pip install -r requirements.txt
 python setup.py install
