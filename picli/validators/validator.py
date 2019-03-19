@@ -63,11 +63,17 @@ class Validator(object):
             files = [('files', open(zip_file.filename, 'rb'))]
             try:
                 r = requests.post(self.url, files=files)
+            except requests.exceptions.RequestException:
+                message = f'Failed to execute validator. \n\n{e}'
+                util.sysexit_with_message(message)
+            try:
+                r.raise_for_status()
+            except requests.exceptions.HTTPError as e:
+                message = f'Failed to execute validator. \n\n{e}'
+                util.sysexit_with_message(message)
+            else:
                 results = r.json()
                 self._parse_results(results)
-            except requests.exceptions.RequestException as e:
-                message = f"Failed to execute validator. \n\n{e}"
-                util.sysexit_with_message(message)
 
     def _parse_results(self, results):
         """

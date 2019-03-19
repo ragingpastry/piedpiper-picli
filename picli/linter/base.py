@@ -62,10 +62,16 @@ class Base(object):
             files = [('files', open(zip_file.filename, 'rb'))]
             try:
                 r = requests.post(self.url, files=files)
-                LOG.warn(r.text)
             except requests.exceptions.RequestException as e:
                 message = f"Failed to execute linter {self.name}. \n\n{e}"
                 util.sysexit_with_message(message)
+            try:
+                r.raise_for_status()
+            except requests.exceptions.HTTPError as e:
+                message = f'Failed to execute validator. \n\n{e}'
+                util.sysexit_with_message(message)
+            else:
+                LOG.warn(r.text)
 
     @property
     @abc.abstractmethod
