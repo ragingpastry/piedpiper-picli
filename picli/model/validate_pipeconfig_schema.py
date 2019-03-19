@@ -4,15 +4,17 @@ from marshmallow import RAISE
 from marshmallow import ValidationError
 
 
-class PiPolicyChecksSchema(Schema):
+class PiPolicySchema(Schema):
     enabled = fields.Bool(required=True)
     enforcing = fields.Bool(required=True)
+    version = fields.Str(required=True)
 
 
 class PiValidatePipeVarsSchema(Schema):
     run_pipe = fields.Bool(required=True)
     url = fields.Str(required=True)
-    policy_checks = fields.Nested(PiPolicyChecksSchema)
+    version = fields.Str(required=True)
+    policy = fields.Nested(PiPolicySchema)
 
 
 class ValidatePipeConfigSchema(Schema):
