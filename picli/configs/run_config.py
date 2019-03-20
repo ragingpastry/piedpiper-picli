@@ -10,12 +10,9 @@ LOG = logger.get_logger(__name__)
 class RunConfig(object):
 
     def __init__(self, config, base_config):
-        self.config = self._build_config(config)
+        self.config = config
         self.base_config = base_config
         self.files = self._build_file_definitions()
-
-    def _build_config(self, config):
-        return util.safe_load(config)
 
     def _build_file_list(self, group):
         """
@@ -39,21 +36,23 @@ class RunConfig(object):
 
     def _build_file_definitions(self):
         file_definitions = []
-        for group in self.config['pi_lint']:
-            file_list = self._build_file_list(group)
+        for config in self.config:
+            file_list = self._build_file_list(config)
             file_definition_list = []
             for file in file_list:
                 if os.path.isdir(file):
                     continue
-
                 try:
                     file_definition = {
                         'file': os.path.relpath(file,
                                                 self.base_config.base_dir),
-                        'linter': group['linter']
+                        'linter': config['linter'] if 'linter' in config else None,
+                        'sast': config['sast'] if 'sast' in config else None,
                     }
+                    # Clear values that are none.
+                    file_definition = {key: value for key, value in file_definition.items() if value is not None}
                 except KeyError as e:
-                    message = f"Invalid key found in run_vars.{self.config}" \
+                    message = f"Invalid key found in run_vars.{self.config} " \
                               f"\n\n{e}"
                     util.sysexit_with_message(message)
                 file_definition_list.append(file_definition)

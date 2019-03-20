@@ -65,7 +65,7 @@ class BasePipeConfig(object):
                     if file == 'all.yml':
                         with open(os.path.join(root, file)) as f:
                             group_config = f.read()
-                            group_configs.append(group_config)
+                            group_configs.append(util.safe_load(group_config))
         else:
             message = f'Failed to read group_vars in {self.base_config.vars_dir}.'
             util.sysexit_with_message(message)
@@ -81,7 +81,7 @@ class BasePipeConfig(object):
                     continue
                 with open(os.path.join(root, file)) as f:
                     group_config = f.read()
-                    group_configs.append(group_config)
+                    group_configs.append(util.safe_load(group_config))
         return group_configs
 
     def _read_file_vars(self):
@@ -94,9 +94,10 @@ class BasePipeConfig(object):
                     f'{self.base_config.vars_dir}/file_vars.d/'
             ):
                 for file in files:
-                    with open(os.path.join(root, file)) as f:
+                    file_name = os.path.join(root, file)
+                    with open(file_name) as f:
                         file_config = f.read()
-                        yield file_config
+                        yield (file_config, file_name)
 
         else:
             message = f"Failed to read file_vars.d in {self.base_config.vars_dir}/file_vars.d/."
@@ -114,13 +115,31 @@ class BasePipeConfig(object):
         """
         group_configs = []
         for group in self._read_group_vars():
-            run_config = RunConfig(group, self.base_config)
-            for file_definition in run_config.files:
-                for file in self._read_file_vars():
-                    file_config = util.safe_load(file)
-                    if file_definition['file'] == file_config['pi_lint']['file']:
-                        file_definition['linter'] = file_config['pi_lint']['linter']
-            group_configs.append(run_config)
+            for step, config in group.items():
+                if step == f'pi_{self.name}':
+                    run_config = RunConfig(config, self.base_config)
+                    for file_definition in run_config.files:
+                        for file, file_name in self._read_file_vars():
+                            file_config = util.safe_load(file)
+                            try:
+                                if file_definition['file'] == file_config['file']:
+                                    file_definition.update(file_config)
+                            except KeyError as e:
+                                message = f'Invalid file_vars config in {file_name}. \n\nInvalid Key: {e}'
+                                util.sysexit_with_message(message)
+                    group_configs.append(run_config)
+                elif self.name == 'validate':
+                    run_config = RunConfig(config, self.base_config)
+                    for file_definition in run_config.files:
+                        for file, file_name in self._read_file_vars():
+                            file_config = util.safe_load(file)
+                            try:
+                                if file_definition['file'] == file_config['file']:
+                                    file_definition.update(file_config)
+                            except KeyError as e:
+                                message = f'Invalid file_vars config in {file_name}. \n\nInvalid Key: {e}'
+                                util.sysexit_with_message(message)
+                    group_configs.append(run_config)
         return group_configs
 
     def _build_run_config(self):

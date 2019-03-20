@@ -11,10 +11,10 @@ LOG = logger.get_logger(__name__)
 
 class Base(object):
     """Base Lint object
-    Defines the set of behaviours that all linters
+    Defines the set of behaviours that all SAST analyzer
     must share.
 
-    All linters must have an execute method which will be
+    All SAST analyzer must have an execute method which will be
     called by PiCli's command module. The default implementation
     is found here and can be used by subclasses.
 
@@ -29,7 +29,7 @@ class Base(object):
     @abc.abstractmethod
     def name(self):
         """
-        Name of the linter
+        Name of the SAST analyzer
 
         :return: str
         """
@@ -48,15 +48,15 @@ class Base(object):
     @abc.abstractmethod
     def execute(self):
         """
-        Executes the linter.
+        Executes the SAST analyzer.
 
         This default implementation will zip all files in
         the configuration.files list and send that zipfile
-        across the network to the specified linter function.
+        across the network to the specified SAST analyzer function.
 
         :return:  None
         """
-        LOG.info(f"Executing linter {self.name}")
+        LOG.info(f"Executing SAST analyzer: {self.name}")
         with tempfile.TemporaryDirectory() as temp_dir:
             zip_file = self.zip_files(temp_dir)
             with open(zip_file.filename, 'rb') as file:
@@ -64,12 +64,12 @@ class Base(object):
                 try:
                     r = requests.post(self.url, files=files)
                 except requests.exceptions.RequestException as e:
-                    message = f"Failed to execute linter {self.name}. \n\n{e}"
+                    message = f"Failed to execute SAST analyzer {self.name}. \n\n{e}"
                     util.sysexit_with_message(message)
                 try:
                     r.raise_for_status()
                 except requests.exceptions.HTTPError as e:
-                    message = f'Failed to execute validator. \n\n{e}'
+                    message = f'Failed to execute SAST analyzer. \n\n{e}'
                     util.sysexit_with_message(message)
                 else:
                     LOG.warn(r.text)
@@ -81,17 +81,13 @@ class Base(object):
         Defines the URL of the function which the execute method will hit
         :return: string
         """
-        url_version_string = self.config.version.replace('.', '-')
-        if self.config.version == 'latest':
-            return f'{self.config.endpoint}/piedpiper-{self.name}-function'
-        else:
-            return f'{self.config.endpoint}/piedpiper-{self.name}-function-{url_version_string}'
+        return self.config.endpoint + f'/piedpiper-{self.name}-function'
 
     @abc.abstractmethod
     def zip_files(self, destination):
         """
         Zips all files in the run_config.files list if they match
-        the linter.
+        the SAST analyzer.
         :param destination: Path to create the zipfile in
         :return: ZipFile
         """
@@ -99,7 +95,7 @@ class Base(object):
             f'{destination}/{self.name}.zip', 'w', zipfile.ZIP_DEFLATED
         )
         for file in self.run_config.files:
-            if file['linter'] == f'{self.name}':
+            if file['sast'] == f'{self.name}':
                 zip_file.write(
                     f"{self.config.base_config.base_dir}/{file['file']}",
                     file['file']
@@ -115,11 +111,11 @@ class Base(object):
     @property
     def options(self):
         """
-        Merges default options with provided linter configuration
+        Merges default options with provided SAST analyzer configuration
         options.
         FIXME: Not currently used.
 
         :return: dict
         """
         return util.merge_dicts(self.default_options,
-                                self.run_config.config['linter']['options'])
+                                self.run_config.config['sast']['options'])

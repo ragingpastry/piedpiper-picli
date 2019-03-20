@@ -18,4 +18,5 @@ def main(context, config):
 
 
 main.add_command(command.lint.lint)
+main.add_command(command.sast.sast)
 main.add_command(command.validate.validate)
