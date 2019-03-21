@@ -2,4 +2,6 @@
 pi_lint:
   - name: "*"
     linter: noop
-
+pi_sast:
+  - name: "*"
+    sast: noop

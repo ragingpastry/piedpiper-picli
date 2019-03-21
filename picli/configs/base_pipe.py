@@ -165,3 +165,7 @@ class BasePipeConfig(object):
     @property
     def endpoint(self):
         return self.pipe_config[f'pi_{self.name}_pipe_vars']['url']
+
+    @property
+    def version(self):
+        return self.pipe_config[f'pi_{self.name}_pipe_vars']['version']

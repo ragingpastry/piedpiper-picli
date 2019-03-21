@@ -36,12 +36,16 @@ class ValidatePipeConfig(BasePipeConfig):
         return self.pipe_config['pi_validate_pipe_vars']
 
     @property
-    def policy_checks_enforcing(self):
-        return self.pipe_vars['policy_checks']['enforcing']
+    def policy_enforcing(self):
+        return self.pipe_vars['policy']['enforcing']
 
     @property
-    def policy_checks_enabled(self):
-        return self.pipe_vars['policy_checks']['enabled']
+    def policy_enabled(self):
+        return self.pipe_vars['policy']['enabled']
+
+    @property
+    def policy_version(self):
+        return self.pipe_vars['policy']['version']
 
     def _validate(self):
         errors = validate_pipeconfig_schema.validate(self.pipe_config)

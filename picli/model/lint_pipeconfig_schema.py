@@ -7,6 +7,7 @@ from marshmallow import ValidationError
 class PiLintPipeVarsSchema(Schema):
     run_pipe = fields.Bool(required=True)
     url = fields.Str(required=True)
+    version = fields.Str(required=True)
 
 
 class LintPipeConfigSchema(Schema):

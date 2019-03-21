@@ -1,0 +1,4 @@
+---
+pi_lint:
+  - name: "*.py"
+    linter: flake8

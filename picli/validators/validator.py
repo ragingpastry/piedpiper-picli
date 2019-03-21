@@ -26,7 +26,7 @@ class Validator(object):
         Initialize the Validator.
         :param base_config: ValidatePipeConfig object
         """
-        self.base_config = base_config
+        self.config = base_config
 
     @property
     def name(self):
@@ -34,11 +34,15 @@ class Validator(object):
 
     @property
     def url(self):
-        return self.base_config.endpoint + f'/piedpiper-{self.name}-function'
+        url_version_string = self.config.version.replace('.', '-')
+        if self.config.version == 'latest':
+            return f'{self.config.endpoint}/piedpiper-{self.name}-function'
+        else:
+            return f'{self.config.endpoint}/piedpiper-{self.name}-function-{url_version_string}'
 
     @property
     def enabled(self):
-        return self.base_config.run_pipe
+        return self.config.run_pipe
 
     def zip_files(self, destination):
         """
@@ -50,7 +54,7 @@ class Validator(object):
             zip_file = zipfile.ZipFile(
                 f'{destination}/validation.zip', 'w', zipfile.ZIP_DEFLATED
             )
-            zip_file.writestr("run_vars.yml", self.base_config.dump_configs())
+            zip_file.writestr("run_vars.yml", self.config.dump_configs())
             zip_file.close()
             return zip_file
         except Exception as e:
@@ -91,7 +95,7 @@ class Validator(object):
                     if value['errors']:
                         result_list.append(stage_result)
         if len(result_list):
-            if self.base_config.policy_checks_enforcing:
+            if self.config.policy_enforcing:
                 util.sysexit_with_message(
                     json.dumps(result_list, indent=4)
                 )

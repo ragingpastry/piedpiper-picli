@@ -1,6 +1,7 @@
 image: python:3.6
 
 stages:
+  - validate
   - lint
   - build
   - generate_docker_image_push_to_nexus
