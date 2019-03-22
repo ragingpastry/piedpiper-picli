@@ -32,6 +32,8 @@ pip install -r requirements.txt
 python setup.py install
 ```
 
+## Using
+
 To run PiCli:
 
 #### Execute a lint
@@ -46,10 +48,20 @@ picli --config path/to/your/repo/piedpier.d/pi_global_vars.yml lint
 picli --config path/to/your/repo/piedpier.d/pi_global_vars.yml validate
 ```
 
+### CLI Arguments
+
+**debug**
+```
+picli --debug validate
+```
+Debug will dump PiCli's run_vars to the screen during execution. This allows
+the user to validate PiCli's configuration that is being sent to the
+various functions. 
+
 ## Running the tests
 
 Currently we just have functional tests. These require an OpenFaaS installation. The test script
-can be found in tests/funcitonal/run-tests.sh
+can be found in tests/functional/run-tests.sh
 
 
 ## Deployment

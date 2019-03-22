@@ -9,12 +9,15 @@ LOG = logger.get_logger(__name__)
 
 
 class Sast(base.Base):
-    def __init__(self, base_config):
-        super(Sast, self).__init__(base_config)
+    def __init__(self, base_config, debug):
+        super(Sast, self).__init__(base_config, debug)
 
     def execute(self):
         self.print_info()
-        sast_pipe_config = SastPipeConfig(self._base_config)
+        sast_pipe_config = SastPipeConfig(self._base_config, self.debug)
+        if self.debug:
+            message = f'Debugging run_vars\n\n{sast_pipe_config.dump_configs()}'
+            LOG.info(message)
         if sast_pipe_config.run_pipe:
             sast_analyzers = set()
             for file in sast_pipe_config.run_config.files:
@@ -36,6 +39,7 @@ class Sast(base.Base):
 @click.pass_context
 def sast(context):
     config_file = context.obj.get('args')['config']
+    debug = context.obj.get('args')['debug']
     sequence = base.get_sequence('sast')
     for action in sequence:
-        base.execute_subcommand(config_file, action)
+        base.execute_subcommand(config_file, action, debug)
