@@ -6,5 +6,5 @@ for project in \
     python_project; do
 
     echo "Running picli on project $project in $(dirname $0)/$project"
-    picli --config $(dirname $0)/$project/piedpiper.d/pi_global_vars.yml lint
+    picli --config $(dirname $0)/$project/piedpiper.d/pi_global_vars.yml --debug lint
 done

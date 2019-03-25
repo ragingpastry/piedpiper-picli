@@ -9,9 +9,10 @@ LOG = logger.get_logger(__name__)
 
 class BaseConfig(object):
 
-    def __init__(self, config):
+    def __init__(self, config, debug):
         self.base_path = self._find_base_dir(config)
         self.config = self._read_config(config)
+        self.debug = debug
         self._validate()
 
     def _find_base_dir(self, config):

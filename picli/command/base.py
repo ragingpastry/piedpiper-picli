@@ -9,8 +9,9 @@ LOG = logger.get_logger(__name__)
 class Base(object):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, base_config):
+    def __init__(self, base_config, debug):
         self._base_config = base_config
+        self.debug = debug
 
     @abc.abstractmethod
     def execute(self):
@@ -21,11 +22,11 @@ class Base(object):
         LOG.info(message)
 
 
-def execute_subcommand(config, subcommand):
+def execute_subcommand(config, subcommand, debug):
     command_module = getattr(picli.command, subcommand)
     command = getattr(command_module, util.camelize(subcommand))
 
-    return command(config).execute()
+    return command(config, debug).execute()
 
 
 def get_sequence(step):

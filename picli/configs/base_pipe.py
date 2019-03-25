@@ -16,13 +16,13 @@ class BasePipeConfig(object):
 
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, base_config):
+    def __init__(self, base_config, debug):
         """
         Builds a BaseConfig object, run configurations,
         and a pipe_config based on the subclasses' name attr.
         :param base_config:
         """
-        self.base_config = BaseConfig(base_config)
+        self.base_config = BaseConfig(base_config, debug)
         self.run_config = self._build_run_config()
         self.pipe_config = self._build_pipe_config()
 
@@ -173,6 +173,10 @@ class BasePipeConfig(object):
         return merged_run_config
 
     @property
+    def debug(self):
+        return self.base_config.debug
+
+    @property
     @abc.abstractmethod
     def name(self):
         pass
@@ -188,3 +192,11 @@ class BasePipeConfig(object):
     @property
     def version(self):
         return self.pipe_config[f'pi_{self.name}_pipe_vars']['version']
+
+    def dump_configs(self):
+        run_config = {}
+        file_config = [file for file in self.run_config.files]
+        util.merge_dicts(run_config, {'file_config': file_config})
+        util.merge_dicts(run_config, self.base_config.config)
+        util.merge_dicts(run_config, self.pipe_config)
+        return util.safe_dump(run_config)

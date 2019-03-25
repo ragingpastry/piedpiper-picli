@@ -62,6 +62,8 @@ class Base(object):
             with open(zip_file.filename, 'rb') as file:
                 files = [('files', file)]
                 try:
+                    if self.config.debug:
+                        LOG.info(f'Sending zipfile to {self.url}')
                     r = requests.post(self.url, files=files)
                 except requests.exceptions.RequestException as e:
                     message = f"Failed to execute linter {self.name}. \n\n{e}"
@@ -100,6 +102,9 @@ class Base(object):
         )
         for file in self.run_config.files:
             if file['linter'] == f'{self.name}':
+                if self.config.debug:
+                    message = f'Writing {file["file"]} to zip'
+                    LOG.info(message)
                 zip_file.write(
                     f"{self.config.base_config.base_dir}/{file['file']}",
                     file['file']

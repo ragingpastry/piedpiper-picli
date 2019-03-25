@@ -24,13 +24,13 @@ class SastPipeConfig(BasePipeConfig):
         {base_dir}/piedpiper.d/{vars_dir}/pipe_vars.d/pi_lint.yml
     """
 
-    def __init__(self, base_config):
+    def __init__(self, base_config, debug):
         """
         Call the superclass init to build BaseConfig object,
         pipe_configs, and run_configs, then validate.
         :param base_config:
         """
-        super(SastPipeConfig, self).__init__(base_config)
+        super(SastPipeConfig, self).__init__(base_config, debug)
         self._validate()
 
     @property
@@ -42,11 +42,3 @@ class SastPipeConfig(BasePipeConfig):
         if errors:
             msg = f"Failed to validate SAST Pipe Config. \n\n{errors.messages}"
             util.sysexit_with_message(msg)
-
-    def _dump_configs(self):
-        """
-        Dump file configurations in the LintPipe's run configuration
-        :return: Iterator
-        """
-        for sast_config in self.run_configs:
-            yield util.safe_dump(sast_config.files)
