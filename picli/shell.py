@@ -25,5 +25,6 @@ def main(context, config, debug):
 
 
 main.add_command(command.lint.lint)
+main.add_command(command.style.style)
 main.add_command(command.sast.sast)
 main.add_command(command.validate.validate)

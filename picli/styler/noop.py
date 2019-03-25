@@ -1,14 +1,14 @@
-from picli.linter import base
+from picli.styler import base
 from picli import logger
 
 LOG = logger.get_logger(__name__)
 
 
 class Noop(base.Base):
-    """Noop linter implementation
+    """Noop styler implementation
 
     Performs a noop for all files in our
-    configuration which have the "noop" linter. We simply
+    configuration which have the "noop" styler. We simply
     print to the screen instead of sending the files anywhere.
 
     """
@@ -29,8 +29,8 @@ class Noop(base.Base):
         pass
 
     def execute(self):
-        LOG.info(f"Executing linter {self.name}")
+        LOG.info(f"Executing styler {self.name}")
         for file in self.run_config.files:
-            if file['linter'] == self.name:
+            if file['styler'] == self.name:
                 message = f'Executing {self.name} on {file["file"]}'
                 LOG.success(message)

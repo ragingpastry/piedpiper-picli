@@ -1,4 +1,4 @@
 ---
 file: "src/config.py"
-linter: "noop"
+styler: "noop"
 sast: "noop"

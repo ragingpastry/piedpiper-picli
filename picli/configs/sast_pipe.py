@@ -12,16 +12,16 @@ class SastPipeConfig(BasePipeConfig):
 
     Subclasses BasePipeConfig.
 
-    An instantiated LintPipeConfig object will contain
+    An instantiated SastPipeConfig object will contain
     all required properties and files needed by a SAST analyzer
-    to execute a lint step. The Lint PipeConfig object will
+    to execute a SAST step. The Sast PipeConfig object will
     do the followinng:
       - Build a BaseConfig object using the file specified
         during initialization.
       - Build a run configuration which contains a list of
         files definitions.
       - Read the SAST analyzer configuration file located in
-        {base_dir}/piedpiper.d/{vars_dir}/pipe_vars.d/pi_lint.yml
+        {base_dir}/piedpiper.d/{vars_dir}/pipe_vars.d/pi_sast.yml
     """
 
     def __init__(self, base_config, debug):

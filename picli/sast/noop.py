@@ -1,4 +1,4 @@
-from picli.linter import base
+from picli.sast import base
 from picli import logger
 
 LOG = logger.get_logger(__name__)

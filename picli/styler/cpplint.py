@@ -1,11 +1,11 @@
-from picli.linter import base
+from picli.styler import base
 
 
-class Flake8(base.Base):
-    """Flake8 linter implementation
+class Cpplint(base.Base):
+    """CppLint styler implementation
 
-    Defines behaviour for the Flake8 linter.
-    Currently this just exists to set the Flake8 name.
+    Defines behaviour for the cpplint styler.
+    Currently this just exists to set the cpplint name.
     All other methods simply call the superclass methods.
     We override here simply for readability, but that may
     change.
@@ -13,15 +13,15 @@ class Flake8(base.Base):
     """
 
     def __init__(self, base_config, config):
-        super(Flake8, self).__init__(base_config, config)
+        super(Cpplint, self).__init__(base_config, config)
 
     @property
     def name(self):
-        return 'flake8'
+        return 'cpplint'
 
     @property
     def default_options(self):
-        options = self.run_config.flake8_options
+        options = self.run_config.cpplint_options
 
         return options
 

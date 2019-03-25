@@ -1,5 +1,5 @@
 from picli.configs.base_pipe import BasePipeConfig
-from picli.model import lint_pipeconfig_schema
+from picli.model import style_pipeconfig_schema
 from picli import logger
 from picli import util
 
@@ -7,21 +7,21 @@ from picli import util
 LOG = logger.get_logger(__name__)
 
 
-class LintPipeConfig(BasePipeConfig):
-    """A class to pass configuration to a Linter
+class StylePipeConfig(BasePipeConfig):
+    """A class to pass configuration to a Styler
 
     Subclasses BasePipeConfig.
 
-    An instantiated LintPipeConfig object will contain
-    all required properties and files needed by a linter
-    to execute a lint step. The Lint PipeConfig object will
+    An instantiated StylePipeConfig object will contain
+    all required properties and files needed by a styler
+    to execute a style step. The Style PipeConfig object will
     do the followinng:
       - Build a BaseConfig object using the file specified
         during initialization.
       - Build a run configuration which contains a list of
         files definitions.
-      - Read the lintpipe configuration file located in
-        {base_dir}/piedpiper.d/{vars_dir}/pipe_vars.d/pi_lint.yml
+      - Read the stylepipe configuration file located in
+        {base_dir}/piedpiper.d/{vars_dir}/pipe_vars.d/pi_style.yml
     """
 
     def __init__(self, base_config, debug):
@@ -30,15 +30,15 @@ class LintPipeConfig(BasePipeConfig):
         pipe_configs, and run_configs, then validate.
         :param base_config:
         """
-        super(LintPipeConfig, self).__init__(base_config, debug)
+        super(StylePipeConfig, self).__init__(base_config, debug)
         self._validate()
 
     @property
     def name(self):
-        return 'lint'
+        return 'style'
 
     def _validate(self):
-        errors = lint_pipeconfig_schema.validate(self.pipe_config)
+        errors = style_pipeconfig_schema.validate(self.pipe_config)
         if errors:
-            msg = f"Failed to validate Lint Pipe Config. \n\n{errors.messages}"
+            msg = f"Failed to validate Style Pipe Config. \n\n{errors.messages}"
             util.sysexit_with_message(msg)
