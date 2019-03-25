@@ -1,5 +1,4 @@
 ---
-pi_lint:
-  file: "src/config.py"
-  linter: "noop"
-
+file: "src/config.py"
+linter: "noop"
+sast: "noop"

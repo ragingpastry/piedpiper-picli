@@ -37,7 +37,12 @@ def get_sequence(step):
     elif step == 'lint':
         return [
             'validate',
-            'lint'
+            'lint',
+            'sast'
+        ]
+    elif step == 'sast':
+        return [
+            'sast'
         ]
     else:
         util.sysexit_with_message(f"picli sequence not found for {step}")
