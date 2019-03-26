@@ -1,4 +1,4 @@
-pi_lint_pipe_vars:
+pi_style_pipe_vars:
   run_pipe: true
   version: latest
   url: http://172.17.0.1:8080/function

@@ -35,10 +35,14 @@ def get_sequence(step):
         return [
             'validate'
         ]
+    elif step == 'style':
+        return [
+            'style'
+        ]
     elif step == 'lint':
         return [
             'validate',
-            'lint',
+            'style',
             'sast'
         ]
     elif step == 'sast':

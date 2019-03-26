@@ -1,7 +1,7 @@
 ---
-pi_lint:
+pi_style:
   - name: "*"
-    linter: noop
+    styler: noop
 pi_sast:
   - name: "*"
     sast: noop

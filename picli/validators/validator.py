@@ -54,6 +54,9 @@ class Validator(object):
             zip_file = zipfile.ZipFile(
                 f'{destination}/validation.zip', 'w', zipfile.ZIP_DEFLATED
             )
+            if self.config.debug:
+                message = f'Writing run_vars.yml to zip'
+                LOG.info(message)
             zip_file.writestr("run_vars.yml", self.config.dump_configs())
             zip_file.close()
             return zip_file
@@ -66,6 +69,8 @@ class Validator(object):
             zip_file = self.zip_files(temp_dir)
             files = [('files', open(zip_file.filename, 'rb'))]
             try:
+                if self.config.debug:
+                    LOG.info(f'Sending zipfile to {self.url}')
                 r = requests.post(self.url, files=files)
             except requests.exceptions.RequestException:
                 message = f'Failed to execute validator. \n\n{e}'

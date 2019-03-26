@@ -1,4 +1,4 @@
 ---
-pi_lint:
+pi_style:
   - name: "*.py"
-    linter: flake8
+    styler: flake8

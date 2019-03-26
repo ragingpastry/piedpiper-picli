@@ -4,18 +4,18 @@ from marshmallow import RAISE
 from marshmallow import ValidationError
 
 
-class PiLintPipeVarsSchema(Schema):
+class PiStylePipeVarsSchema(Schema):
     run_pipe = fields.Bool(required=True)
     url = fields.Str(required=True)
     version = fields.Str(required=True)
 
 
-class LintPipeConfigSchema(Schema):
-    pi_lint_pipe_vars = fields.Nested(PiLintPipeVarsSchema)
+class StylePipeConfigSchema(Schema):
+    pi_style_pipe_vars = fields.Nested(PiStylePipeVarsSchema)
 
 
 def validate(config):
-    schema = LintPipeConfigSchema(unknown=RAISE)
+    schema = StylePipeConfigSchema(unknown=RAISE)
     try:
         _ = schema.load(config)
         result = None

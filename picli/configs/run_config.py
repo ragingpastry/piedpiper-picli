@@ -46,7 +46,7 @@ class RunConfig(object):
                     file_definition = {
                         'file': os.path.relpath(file,
                                                 self.base_config.base_dir),
-                        'linter': config['linter'] if 'linter' in config else None,
+                        'styler': config['styler'] if 'styler' in config else None,
                         'sast': config['sast'] if 'sast' in config else None,
                     }
                     # Clear values that are none.

@@ -1,7 +1,7 @@
 ---
-pi_lint:
+pi_style:
   - name: "*.cc"
-    linter: cpplint
+    styler: cpplint
   - name: "*.h"
-    linter: cpplint
+    styler: cpplint
 

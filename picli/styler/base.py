@@ -10,11 +10,11 @@ LOG = logger.get_logger(__name__)
 
 
 class Base(object):
-    """Base Lint object
-    Defines the set of behaviours that all linters
+    """Base Style object
+    Defines the set of behaviours that all styler
     must share.
 
-    All linters must have an execute method which will be
+    All styler must have an execute method which will be
     called by PiCli's command module. The default implementation
     is found here and can be used by subclasses.
 
@@ -29,7 +29,7 @@ class Base(object):
     @abc.abstractmethod
     def name(self):
         """
-        Name of the linter
+        Name of the styler
 
         :return: str
         """
@@ -48,15 +48,15 @@ class Base(object):
     @abc.abstractmethod
     def execute(self):
         """
-        Executes the linter.
+        Executes the styler.
 
         This default implementation will zip all files in
         the configuration.files list and send that zipfile
-        across the network to the specified linter function.
+        across the network to the specified styler function.
 
         :return:  None
         """
-        LOG.info(f"Executing linter {self.name}")
+        LOG.info(f"Executing styler {self.name}")
         with tempfile.TemporaryDirectory() as temp_dir:
             zip_file = self.zip_files(temp_dir)
             with open(zip_file.filename, 'rb') as file:
@@ -66,7 +66,7 @@ class Base(object):
                         LOG.info(f'Sending zipfile to {self.url}')
                     r = requests.post(self.url, files=files)
                 except requests.exceptions.RequestException as e:
-                    message = f"Failed to execute linter {self.name}. \n\n{e}"
+                    message = f"Failed to execute styler {self.name}. \n\n{e}"
                     util.sysexit_with_message(message)
                 try:
                     r.raise_for_status()
@@ -93,7 +93,7 @@ class Base(object):
     def zip_files(self, destination):
         """
         Zips all files in the run_config.files list if they match
-        the linter.
+        the styler.
         :param destination: Path to create the zipfile in
         :return: ZipFile
         """
@@ -101,7 +101,7 @@ class Base(object):
             f'{destination}/{self.name}.zip', 'w', zipfile.ZIP_DEFLATED
         )
         for file in self.run_config.files:
-            if file['linter'] == f'{self.name}':
+            if file['styler'] == f'{self.name}':
                 if self.config.debug:
                     message = f'Writing {file["file"]} to zip'
                     LOG.info(message)
@@ -120,11 +120,11 @@ class Base(object):
     @property
     def options(self):
         """
-        Merges default options with provided linter configuration
+        Merges default options with provided styler configuration
         options.
         FIXME: Not currently used.
 
         :return: dict
         """
         return util.merge_dicts(self.default_options,
-                                self.run_config.config['linter']['options'])
+                                self.run_config.config['styler']['options'])
