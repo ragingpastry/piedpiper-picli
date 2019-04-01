@@ -5,3 +5,6 @@ pi_style:
 pi_sast:
   - name: "*"
     sast: noop
+pi_unit:
+  - name: "*"
+    unit: noop

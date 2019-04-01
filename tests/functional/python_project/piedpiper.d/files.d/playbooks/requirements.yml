@@ -1,0 +1,7 @@
+---
+- src: https://github.com/AFCYBER-DREAM/ansible-role-openshift_provision.git
+  name: openshift_provision
+- src: https://github.com/AFCYBER-DREAM/ansible-role-openstack_provision.git
+  name: openstack_provision
+- src: https://github.com/AFCYBER-DREAM/ansible-role-esxi_provision.git
+  name: esxi_provision

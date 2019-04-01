@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+  haproxy:
+    build: haproxy
+    links:
+      - app:app
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    
+  app:
+    build:
+      context: ../../charon
+      dockerfile: app/Dockerfile
+    restart: unless-stopped
+    links:
+      - redis
+    environment:
+      - CHARON_APIKEY='123'
+      - CHARON_SSH_KEY='123'
+      - CHARON_CONFIG_FILE=/charon/charon/charon_config.txt
+
+  worker:
+    build:
+      context: ../../charon
+      dockerfile: worker/Dockerfile
+    restart: unless-stopped
+
+  redis:
+    image: redis
+    restart: unless-stopped

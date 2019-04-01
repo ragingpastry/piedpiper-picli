@@ -31,6 +31,5 @@ class Noop(base.Base):
     def execute(self):
         LOG.info(f"Executing styler {self.name}")
         for file in self.run_config.files:
-            if file['styler'] == self.name:
-                message = f'Executing {self.name} on {file["file"]}'
-                LOG.success(message)
+            message = f'Executing {self.name} on {file["file"]}'
+            LOG.success(message)

@@ -1,0 +1,9 @@
+---
+- name: Create infrastructure
+  hosts: localhost
+  tasks:
+    - name: Create infrastructure host
+
+    - name: Gather host information
+
+    - name:

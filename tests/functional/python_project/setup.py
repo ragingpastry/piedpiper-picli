@@ -1,0 +1,71 @@
+from setuptools import setup
+
+
+def readme():
+    with open('README.md') as f:
+        return f.read()
+
+
+setup(name='charon',
+      version='0.1',
+      description='Image Pipeline Service',
+      long_description=readme(),
+      classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Programming Language :: Python :: 2.7',
+      ],
+      keywords='openstack aws image security',
+      url='https://gitlab.rinconres/com/csg/charon',
+      author='CSG',
+      author_email='flyingcircus@example.com',
+      packages=['charon'],
+      install_requires=[
+          'markdown',
+          'anyconfig',
+          'asn1crypto',
+          'attrs',
+          'bcrypt',
+          'certifi',
+          'cffi',
+          'chardet',
+          'click',
+          'cryptography',
+          'enum34',
+          'fakeredis',
+          'Flask',
+          'Flask-Limiter',
+          'funcsigs',
+          'idna',
+          'ipaddress',
+          'itsdangerous',
+          'Jinja2',
+          'limits',
+          'lxml',
+          'MarkupSafe',
+          'marshmallow',
+          'mock',
+          'paramiko',
+          'pbr',
+          'pluggy',
+          'py',
+          'pyasn1',
+          'pycparser',
+          'PyNaCl',
+          'pytest',
+          'pytest-flask',
+          'PyYAML',
+          'redis',
+          'requests',
+          'rq',
+          'six',
+          'urllib3',
+          'Werkzeug',
+          'yml'
+      ],
+      test_suite='nose.collector',
+      tests_require=['nose', 'nose-cover3'],
+      entry_points={
+          'console_scripts': ['funniest-joke=funniest.command_line:main'],
+      },
+      include_package_data=True,
+      zip_safe=False)

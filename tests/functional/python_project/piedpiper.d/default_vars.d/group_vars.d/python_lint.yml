@@ -1,4 +1,4 @@
 ---
 pi_style:
-  - name: "*.py"
+  - name: "charon/**/**.py"
     styler: flake8

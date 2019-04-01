@@ -101,14 +101,10 @@ class Base(object):
             f'{destination}/{self.name}.zip', 'w', zipfile.ZIP_DEFLATED
         )
         for file in self.run_config.files:
-            if file['styler'] == f'{self.name}':
-                if self.config.debug:
-                    message = f'Writing {file["file"]} to zip'
-                    LOG.info(message)
-                zip_file.write(
-                    f"{self.config.base_config.base_dir}/{file['file']}",
-                    file['file']
-                )
+            if self.config.debug:
+                message = f'Writing {file["file"]} to zip'
+                LOG.info(message)
+            zip_file.write(file['file'])
         zip_file.close()
 
         return zip_file

@@ -2,3 +2,4 @@
 pi_style:
   - name: "*.py"
     styler: flake8
+    options: "-r --ignore-whitespace ."

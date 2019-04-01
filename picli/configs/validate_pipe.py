@@ -63,9 +63,7 @@ class ValidatePipeConfig(BasePipeConfig):
         return {
             'ci_provider': self.base_config.ci_provider,
             'ci_provider_config':
-                util.safe_load_file(
-                    f'{self.base_config.base_dir}/{self.base_config.ci_provider_file}'
-                )
+                util.safe_load_file(self.base_config.ci_provider_file)
         }
 
     def _build_pipe_configs(self, base_config, debug):
@@ -99,7 +97,7 @@ class ValidatePipeConfig(BasePipeConfig):
         :return: dict
         """
         run_config = {}
-        file_config = [file for file in self.run_config.files]
+        file_config = [file for file in run_config for run_config in self.run_config]
         util.merge_dicts(run_config, {'file_config': file_config})
         util.merge_dicts(run_config, self.base_config.config)
         util.merge_dicts(run_config, self.pipe_config)

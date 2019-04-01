@@ -49,5 +49,9 @@ def get_sequence(step):
         return [
             'sast'
         ]
+    elif step == 'unit':
+        return [
+            'unit'
+        ]
     else:
         util.sysexit_with_message(f"picli sequence not found for {step}")

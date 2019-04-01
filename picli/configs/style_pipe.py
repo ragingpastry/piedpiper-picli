@@ -33,6 +33,15 @@ class StylePipeConfig(BasePipeConfig):
         super(StylePipeConfig, self).__init__(base_config, debug)
         self._validate()
 
+    def _build_run_config(self):
+        """
+        Returns RunConfig objects for each group_vars.d/ file
+        :return: List of RunConfig objects
+        """
+        run_configs = self._build_group_configs()
+        run_config = self._merge_run_configs(run_configs)
+        return run_config
+
     @property
     def name(self):
         return 'style'

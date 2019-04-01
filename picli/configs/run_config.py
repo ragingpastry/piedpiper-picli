@@ -1,5 +1,4 @@
 from picli import logger
-from picli import util
 
 import glob
 import os
@@ -9,8 +8,9 @@ LOG = logger.get_logger(__name__)
 
 class RunConfig(object):
 
-    def __init__(self, config, base_config):
+    def __init__(self, name, config, base_config):
         self.config = config
+        self.name = name
         self.base_config = base_config
         self.files = self._build_file_definitions()
 
@@ -24,12 +24,11 @@ class RunConfig(object):
         """
         file_glob = group['name']
         file_list = \
-            glob.glob(f'{self.base_config.vars_dir}/../../**/{file_glob}',
-                      recursive=True)
+            glob.glob(f'{file_glob}', recursive=True)
         if not file_list:
             message = \
                 f'File Glob {file_glob} returned nothing ' \
-                f'in {self.base_config.vars_dir}/../../'
+                f'in {os.getcwd()}'
             LOG.warn(message)
 
         return file_list
@@ -42,19 +41,9 @@ class RunConfig(object):
             for file in file_list:
                 if os.path.isdir(file):
                     continue
-                try:
-                    file_definition = {
-                        'file': os.path.relpath(file,
-                                                self.base_config.base_dir),
-                        'styler': config['styler'] if 'styler' in config else None,
-                        'sast': config['sast'] if 'sast' in config else None,
-                    }
-                    # Clear values that are none.
-                    file_definition = {key: value for key, value in file_definition.items() if value is not None}
-                except KeyError as e:
-                    message = f"Invalid key found in run_vars.{self.config} " \
-                              f"\n\n{e}"
-                    util.sysexit_with_message(message)
+                file_definition = {
+                    'file': file,
+                }
                 file_definition_list.append(file_definition)
 
             file_definitions.append(file_definition_list)

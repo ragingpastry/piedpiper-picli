@@ -1,0 +1,4 @@
+pi_unit:
+  - name: "*.py"
+    unit: "pytest"
+    options: "--ignore=src/molecule --cov=charon"

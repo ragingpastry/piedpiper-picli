@@ -23,7 +23,8 @@ class BaseConfig(object):
         configuration file. This will be the base directory
         that all other methods will assume.
         """
-        base_dir = os.path.dirname(os.path.dirname(config))
+        #base_dir = os.path.dirname(os.path.dirname(config))
+        base_dir = os.path.basename(os.path.normpath(os.path.join(os.path.abspath(config), '../..')))
         if not base_dir:
             base_dir = '.'
         return base_dir
@@ -87,7 +88,7 @@ class BaseConfig(object):
 
         :return: String of path to piedpiper.d directory.
         """
-        piedpiper_dir = self.base_path + '/' + 'piedpiper.d/'
+        piedpiper_dir = 'piedpiper.d/'
         if os.path.isdir(piedpiper_dir):
             return piedpiper_dir
         else:

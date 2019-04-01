@@ -1,0 +1,5 @@
+pi_unit:
+  - name: "**"
+    unit: "pytest"
+    options: "--ignore=src/molecule --cov=charon"
+    entrypoint: "tests/run-tests.sh"
