@@ -5,6 +5,8 @@ from picli import logger
 from picli import util
 
 import importlib
+from functools import reduce
+import operator
 
 LOG = logger.get_logger(__name__)
 
@@ -63,9 +65,7 @@ class ValidatePipeConfig(BasePipeConfig):
         return {
             'ci_provider': self.base_config.ci_provider,
             'ci_provider_config':
-                util.safe_load_file(
-                    f'{self.base_config.base_dir}/{self.base_config.ci_provider_file}'
-                )
+                util.safe_load_file(self.base_config.ci_provider_file)
         }
 
     def _build_pipe_configs(self, base_config, debug):
@@ -79,6 +79,7 @@ class ValidatePipeConfig(BasePipeConfig):
         :param base_config:
         :return: iterator
         """
+        pipe_configs = []
         pipes = [pipe for pipe in dir(configs)
                  if "_pipe" in pipe and
                  "validate" not in pipe and
@@ -87,7 +88,9 @@ class ValidatePipeConfig(BasePipeConfig):
             pipe_config_module = getattr(importlib.import_module(f'picli.configs.{pipe}'),
                                          f'{util.camelize(pipe)}Config')
             pipe_config = pipe_config_module(base_config, debug)
-            yield pipe_config
+            pipe_configs.append(pipe_config)
+
+        return pipe_configs
 
     def dump_configs(self):
         """
@@ -98,13 +101,30 @@ class ValidatePipeConfig(BasePipeConfig):
         external source.
         :return: dict
         """
-        run_config = {}
-        file_config = [file for file in self.run_config.files]
-        util.merge_dicts(run_config, {'file_config': file_config})
-        util.merge_dicts(run_config, self.base_config.config)
-        util.merge_dicts(run_config, self.pipe_config)
-        util.merge_dicts(run_config, {'ci': self.read_ci_provider_file()})
+        merged_run_configs = {}
+        file_configs = []
+        group_configs = []
+        util.merge_dicts(merged_run_configs, self.base_config.config)
+        util.merge_dicts(merged_run_configs, self.pipe_config)
+        util.merge_dicts(merged_run_configs, {'ci': self.read_ci_provider_file()})
         for pipe_config in self.pipe_configs:
-            util.merge_dicts(run_config, pipe_config.pipe_config)
+            group_config = [group_config
+                            for run_config in pipe_config.run_config
+                            for group_config in run_config.config]
+            group_configs.append(group_config)
+            file_config = [file
+                           for run_config in pipe_config.run_config
+                           for file in run_config.files]
+            file_configs.append(file_config)
+            util.merge_dicts(merged_run_configs, pipe_config.pipe_config)
 
-        return util.safe_dump(run_config)
+        util.merge_dicts(
+            merged_run_configs,
+            {'group_configs': reduce(operator.concat, group_configs)}
+        )
+        util.merge_dicts(
+            merged_run_configs,
+            {'file_configs': reduce(operator.concat, file_configs)}
+        )
+
+        return util.safe_dump(merged_run_configs)

@@ -25,21 +25,15 @@ class Style(base.Base):
         """
         self.print_info()
         style_pipe_config = StylePipeConfig(self._base_config, self.debug)
-        if self.debug:
-            message = f'Debugging run_vars\n\n{style_pipe_config.dump_configs()}'
-            LOG.info(message)
         if style_pipe_config.run_pipe:
-            stylers = set()
-            for file in style_pipe_config.run_config.files:
-                stylers.add(file['styler'])
-            for styler in sorted(stylers):
+            for run_config in style_pipe_config.run_config:
                 style_module = getattr(
                     importlib.import_module(
-                        f'picli.styler.{styler}'
+                        f'picli.actions.styler.{run_config.config[0]["styler"]}'
                     ),
-                    f'{util.camelize(styler)}'
+                    f'{util.camelize(run_config.config[0]["styler"])}'
                 )
-                styler = style_module(style_pipe_config, style_pipe_config.run_config)
+                styler = style_module(style_pipe_config, run_config)
                 styler.execute()
         else:
             LOG.warn("Style step not enabled.\n\nSkipping...")

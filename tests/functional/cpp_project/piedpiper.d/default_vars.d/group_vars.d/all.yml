@@ -1,7 +1,7 @@
 ---
 pi_style:
-  - name: "*"
+  - name: "**"
     styler: noop
 pi_sast:
-  - name: "*"
+  - name: "**"
     sast: noop

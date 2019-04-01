@@ -1,4 +1,4 @@
-from picli.styler import base
+from picli.actions import base
 
 
 class Flake8(base.Base):
@@ -12,18 +12,12 @@ class Flake8(base.Base):
 
     """
 
-    def __init__(self, base_config, config):
-        super(Flake8, self).__init__(base_config, config)
+    def __init__(self, pipe_config, run_config):
+        super(Flake8, self).__init__(pipe_config, run_config)
 
     @property
     def name(self):
         return 'flake8'
-
-    @property
-    def default_options(self):
-        options = self.run_config.flake8_options
-
-        return options
 
     @property
     def url(self):
