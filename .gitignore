@@ -1,6 +1,7 @@
 venv/
 dist/
 build/
+pip-wheel-metadata/
 *.egg-info/
 .idea/
 .mypy_cache/

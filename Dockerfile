@@ -4,7 +4,6 @@ FROM python:3.7-alpine as picli-builder
 WORKDIR /usr/src/picli
 
 ENV PACKAGES="\
-	musl-dev \
 	git \
     "
 RUN apk add --update --no-cache ${PACKAGES}
