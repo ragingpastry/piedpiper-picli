@@ -83,11 +83,11 @@ class Base(object):
         Defines the URL of the function which the execute method will hit
         :return: string
         """
-        url_version_string = self.config.version.replace('.', '-')
+        url_version = self.config.version.replace('.', '-')
         if self.config.version == 'latest':
             return f'{self.config.endpoint}/piedpiper-{self.name}-function'
         else:
-            return f'{self.config.endpoint}/piedpiper-{self.name}-function-{url_version_string}'
+            return f'{self.config.endpoint}/piedpiper-{self.name}-function-{url_version}'
 
     @abc.abstractmethod
     def zip_files(self, destination):

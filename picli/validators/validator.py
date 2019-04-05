@@ -34,11 +34,11 @@ class Validator(object):
 
     @property
     def url(self):
-        url_version_string = self.config.version.replace('.', '-')
+        url_version = self.config.version.replace('.', '-')
         if self.config.version == 'latest':
             return f'{self.config.endpoint}/piedpiper-{self.name}-function'
         else:
-            return f'{self.config.endpoint}/piedpiper-{self.name}-function-{url_version_string}'
+            return f'{self.config.endpoint}/piedpiper-{self.name}-function-{url_version}'
 
     @property
     def enabled(self):
@@ -72,7 +72,7 @@ class Validator(object):
                 if self.config.debug:
                     LOG.info(f'Sending zipfile to {self.url}')
                 r = requests.post(self.url, files=files)
-            except requests.exceptions.RequestException:
+            except requests.exceptions.RequestException as e:
                 message = f'Failed to execute validator. \n\n{e}'
                 util.sysexit_with_message(message)
             try:

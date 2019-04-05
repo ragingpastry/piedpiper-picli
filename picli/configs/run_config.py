@@ -50,7 +50,9 @@ class RunConfig(object):
                         'sast': config['sast'] if 'sast' in config else None,
                     }
                     # Clear values that are none.
-                    file_definition = {key: value for key, value in file_definition.items() if value is not None}
+                    file_definition = {key: value
+                                       for key, value in file_definition.items()
+                                       if value is not None}
                 except KeyError as e:
                     message = f"Invalid key found in run_vars.{self.config} " \
                               f"\n\n{e}"
