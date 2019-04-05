@@ -1,3 +1,4 @@
+---
 pi_global_vars:
   project_name: "cpp_and_python_project"
   ci_provider: "gitlab-ci"

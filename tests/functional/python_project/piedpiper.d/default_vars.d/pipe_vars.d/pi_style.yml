@@ -1,3 +1,4 @@
+---
 pi_style_pipe_vars:
   run_pipe: true
   version: latest

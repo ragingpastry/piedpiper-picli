@@ -4,4 +4,3 @@ pi_style:
     styler: cpplint
   - name: "*.h"
     styler: cpplint
-

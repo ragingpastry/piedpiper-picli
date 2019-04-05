@@ -100,7 +100,8 @@ class BasePipeConfig(object):
                         yield (file_config, file_name)
 
         else:
-            message = f"Failed to read file_vars.d in {self.base_config.vars_dir}/file_vars.d/."
+            message = f"Failed to read file_vars.d in" \
+                      f"{self.base_config.vars_dir}/file_vars.d/."
             util.sysexit_with_message(message)
 
     def _build_group_configs(self):
@@ -125,7 +126,8 @@ class BasePipeConfig(object):
                                 if file_definition['file'] == file_config['file']:
                                     file_definition.update(file_config)
                             except KeyError as e:
-                                message = f'Invalid file_vars config in {file_name}. \n\nInvalid Key: {e}'
+                                message = f'Invalid file_vars config in {file_name}. ' \
+                                          f'\n\nInvalid Key: {e}'
                                 util.sysexit_with_message(message)
                     group_configs.append(run_config)
                 elif self.name == 'validate':
@@ -137,7 +139,8 @@ class BasePipeConfig(object):
                                 if file_definition['file'] == file_config['file']:
                                     file_definition.update(file_config)
                             except KeyError as e:
-                                message = f'Invalid file_vars config in {file_name}. \n\nInvalid Key: {e}'
+                                message = f'Invalid file_vars config in {file_name}.' \
+                                          f'\n\nInvalid Key: {e}'
                                 util.sysexit_with_message(message)
                     group_configs.append(run_config)
         return group_configs
