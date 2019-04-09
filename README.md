@@ -5,16 +5,34 @@ Document more things
 
 PiCli is a python client for PiedPiper, a CI-pipeline validation framework.
 
+Additional documentation for PiedPiper can be found here: (https://piedpiper-picli.readthedocs.io/en/latest/)
+
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+A local development environment can be configured using the following Ansible collection: https://github.com/AFCYBER-DREAM/ansible-collection-pidev/
+
+Follow these instructions to turn a new machine into a PiedPiper development environment:
+
+```bash
+# the "org" variable should be the name of your Github.com organization
+org="afcyber-dream";
+
+# the "repo" variable should be the name of the repo containing your fork of afcyber-dream/ansible-collection-pidev
+repo="ansible-collection-pidev";
+
+# the "env" variable should be the nickname of the environment you wish to provision
+env="ubuntu1804/dockerswarm+openfaas"
+
+# once you have set these three variables, run this command as `root` (not a sudo user):
+bash <(curl -s https://raw.githubusercontent.com/${org}/${repo}/master/bootstrap.sh) ${org}/${repo} ${env}
+```
+Please refer to the README of that repository for further information.
 
 ### Prerequisites
 
-Python 3.6
-(Optionally) virtualenv
-PiedPiper OpenFaaS functions installed. 
-ToDo: Document installation of OpenFaaS + functions
+* Python 3.6  
+* (Optionally) virtualenv  
+* PiedPiper OpenFaaS functions installed. (See above)
 
 
 ### Installing
@@ -28,7 +46,6 @@ docker run -it picli /bin/sh
 
 #### Python installation
 ```
-pip install -r requirements.txt
 python setup.py install
 ```
 
@@ -60,15 +77,11 @@ various functions.
 
 ## Running the tests
 
-Currently we just have functional tests. These require an OpenFaaS installation. The test script
+Currently we just have functional tests and linting tests. These require an OpenFaaS installation. The test script
 can be found in tests/functional/run-tests.sh
 
+To run the lint tests use tox: `tox -e lint`
 
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
-## Built With
 
 ## Contributing
 

@@ -13,6 +13,16 @@ class Style(base.Base):
         super(Style, self).__init__(base_config, debug)
 
     def execute(self):
+        """
+        Executes the style step.
+
+        We will first initialize a StylePipeConfig object, passing in
+        the 'pi_global_vars.yml' configuration file and a debug flag.
+        We will then dynamically discover which styler we need to run
+        based on the run_config of the StylePipeConfig object and then
+        execute that styler.
+        :return:
+        """
         self.print_info()
         style_pipe_config = StylePipeConfig(self._base_config, self.debug)
         if self.debug:
