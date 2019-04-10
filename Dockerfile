@@ -1,12 +1,39 @@
-FROM python:3.6-alpine
+# This is a multi-stage build which requires Docker 17.05 or higher
+FROM python:3.7-alpine as picli-builder
 
-COPY picli /app/picli/
-COPY setup.cfg /app/setup.cfg
-COPY setup.py /app/setup.py
-COPY requirements.txt /app/requirements.txt
-COPY tests/functional /app/tests/
+WORKDIR /usr/src/picli
 
-WORKDIR /app
-RUN pip install -r requirements.txt
-RUN python setup.py build
-RUN python setup.py install
+ENV PACKAGES="\
+	musl-dev \
+	git \
+    "
+RUN apk add --update --no-cache ${PACKAGES}
+
+
+ADD . .
+RUN \
+    pip wheel \
+    -w dist .
+
+# ✄---------------------------------------------------------------------
+# This is an actual target container:
+
+FROM python:3.7-alpine
+LABEL maintainer "DREAM <dream@globalinfotek.com>"
+
+ENV PIP_INSTALL_ARGS="\
+    --only-binary :all: \
+    --no-index \
+    -f /usr/src/picli/dist \
+    "
+
+COPY --from=picli-builder \
+    /usr/src/picli/dist \
+    /usr/src/picli/dist
+
+RUN \
+    pip install ${PIP_INSTALL_ARGS} "picli" && \
+    apk del --no-cache ${BUILD_DEPS} && \
+    rm -rf /root/.cache
+
+ENV SHELL /bin/bash
