@@ -3,7 +3,10 @@ import os
 
 from picli.config import BaseConfig
 from picli.configs.run_config import RunConfig
+from picli import logger
 from picli import util
+
+LOG = logger.get_logger(__name__)
 
 
 class BasePipeConfig(object):
@@ -94,10 +97,15 @@ class BasePipeConfig(object):
                     f'{self.base_config.vars_dir}/file_vars.d/'
             ):
                 for file in files:
-                    file_name = os.path.join(root, file)
-                    with open(file_name) as f:
-                        file_config = f.read()
-                        yield (file_config, file_name)
+                    if file.endswith(".yml") or file.endswith(".yaml"):
+                        file_name = os.path.join(root, file)
+                        with open(file_name) as f:
+                            file_config = f.read()
+                            yield (file_config, file_name)
+                    else:
+                        message = f"Skipping invalid file_vars.d file " \
+                                  f"{os.path.join(root,file)}"
+                        LOG.debug(message)
 
         else:
             message = f"Failed to read file_vars.d in" \
@@ -119,29 +127,31 @@ class BasePipeConfig(object):
             for step, config in group.items():
                 if step == f'pi_{self.name}':
                     run_config = RunConfig(config, self.base_config)
-                    for file_definition in run_config.files:
-                        for file, file_name in self._read_file_vars():
-                            file_config = util.safe_load(file)
-                            try:
-                                if file_definition['file'] == file_config['file']:
-                                    file_definition.update(file_config)
-                            except KeyError as e:
-                                message = f'Invalid file_vars config in {file_name}. ' \
-                                          f'\n\nInvalid Key: {e}'
-                                util.sysexit_with_message(message)
+                    for file, file_name in self._read_file_vars():
+                        file_var = util.safe_load(file)
+                        try:
+                            run_config.files[:] = [file_var
+                                                   if run_file['file'] == file_var['file']
+                                                   else run_file
+                                                   for run_file in run_config.files]
+                        except KeyError as e:
+                            message = f'Invalid file_vars config in {file_name}. ' \
+                                      f'\n\nInvalid Key: {e}'
+                            util.sysexit_with_message(message)
                     group_configs.append(run_config)
                 elif self.name == 'validate':
                     run_config = RunConfig(config, self.base_config)
-                    for file_definition in run_config.files:
-                        for file, file_name in self._read_file_vars():
-                            file_config = util.safe_load(file)
-                            try:
-                                if file_definition['file'] == file_config['file']:
-                                    file_definition.update(file_config)
-                            except KeyError as e:
-                                message = f'Invalid file_vars config in {file_name}.' \
-                                          f'\n\nInvalid Key: {e}'
-                                util.sysexit_with_message(message)
+                    for file, file_name in self._read_file_vars():
+                        file_var = util.safe_load(file)
+                        try:
+                            run_config.files[:] = [file_var
+                                                   if run_file['file'] == file_var['file']
+                                                   else run_file
+                                                   for run_file in run_config.files]
+                        except KeyError as e:
+                            message = f'Invalid file_vars config in {file_name}.' \
+                                      f'\n\nInvalid Key: {e}'
+                            util.sysexit_with_message(message)
                     group_configs.append(run_config)
         return group_configs
 
