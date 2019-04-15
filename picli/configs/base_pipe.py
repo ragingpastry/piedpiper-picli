@@ -3,7 +3,10 @@ import os
 
 from picli.config import BaseConfig
 from picli.configs.run_config import RunConfig
+from picli import logger
 from picli import util
+
+LOG = logger.get_logger(__name__)
 
 
 class BasePipeConfig(object):
@@ -94,10 +97,15 @@ class BasePipeConfig(object):
                     f'{self.base_config.vars_dir}/file_vars.d/'
             ):
                 for file in files:
-                    file_name = os.path.join(root, file)
-                    with open(file_name) as f:
-                        file_config = f.read()
-                        yield (file_config, file_name)
+                    if file.endswith(".yml") or file.endswith(".yaml"):
+                        file_name = os.path.join(root, file)
+                        with open(file_name) as f:
+                            file_config = f.read()
+                            yield (file_config, file_name)
+                    else:
+                        message = f"Skipping invalid file_vars.d file " \
+                                  f"{os.path.join(root,file)}"
+                        LOG.debug(message)
 
         else:
             message = f"Failed to read file_vars.d in" \
