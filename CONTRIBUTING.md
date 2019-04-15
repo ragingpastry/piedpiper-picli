@@ -2,8 +2,16 @@
 
 ## Testing
 
-Function tests
-Unit tests
+Testing is not yet automated. Hopefully you will see this section change in a git commit very soon..
+however..
+
+Please add your tests to the script located here: ``tests/functional/run-tests.sh``. Ensure that
+your tests pass before making a PR in the repository.
+
+To run lint tests you can utilize tox: ``tox``  
+The plan is to expand our unit testing and functional testing utilizing Tox so that we can
+ensure our changes are good. Unfortunately we do not have this implemented yet.
+
 
 ## Submitting changes
 

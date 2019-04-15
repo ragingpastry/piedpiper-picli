@@ -23,6 +23,16 @@ class Base(object):
 
 
 def execute_subcommand(config, subcommand, debug):
+    """
+    Dynamically discover a subcommand module and class based on
+    the subcommand we are executing.
+    After discovery, initialize and run the execute method
+    on the discovered command object.
+    :param config: Configuration file
+    :param subcommand: The subcommand we are executing
+    :param debug: boolean
+    :return:
+    """
     command_module = getattr(picli.command, subcommand)
     command = getattr(command_module, util.camelize(subcommand))
 

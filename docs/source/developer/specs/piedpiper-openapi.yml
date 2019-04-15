@@ -1,0 +1,22 @@
+swagger: "2.0"
+info:
+  title: PiedPiper API
+  version: "0.0.0"
+host: api.piedpiper.net
+paths:
+  /functions/piedpiper-flake8-function:
+    post:
+      summary: Invoke flake8 on input
+      description: |
+        Run the flake8 on the provided files.
+      consumes:
+        - multipart/form-data
+      parameters:
+      - in: formData
+        name: files
+        type: file
+        description: A zip file containing run_vars.yml and all python files that should be ran through flake8
+      responses:
+        200:
+          description: The results of the flake8 run
+

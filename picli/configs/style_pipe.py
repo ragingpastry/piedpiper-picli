@@ -15,13 +15,13 @@ class StylePipeConfig(BasePipeConfig):
     An instantiated StylePipeConfig object will contain
     all required properties and files needed by a styler
     to execute a style step. The Style PipeConfig object will
-    do the followinng:
-      - Build a BaseConfig object using the file specified
-        during initialization.
-      - Build a run configuration which contains a list of
-        files definitions.
-      - Read the stylepipe configuration file located in
-        {base_dir}/piedpiper.d/{vars_dir}/pipe_vars.d/pi_style.yml
+    do the following:
+    Build a BaseConfig object using the file specified
+    during initialization.
+    Build a run configuration which contains a list of
+    files definitions.
+    Read the stylepipe configuration file located in
+    {base_dir}/piedpiper.d/{vars_dir}/pipe_vars.d/pi_style.yml
     """
 
     def __init__(self, base_config, debug):
