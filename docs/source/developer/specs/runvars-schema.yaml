@@ -1,0 +1,86 @@
+---
+type: "object"
+properties:
+  file_config:
+    type: array
+    items:
+      type: object
+      properties:
+        file:
+          type: string
+          description: The name/path of the file
+  pi_global_vars:
+    type: object
+    properties:
+      ci_provider:
+        type: string
+        description: "CI provider project is using."
+        default: "gitlab-ci"
+      project_name:
+        type: string
+        description: "Name of the project. Used for finding validation schemas"
+      vars_dir:
+        type: string
+        description: "Name of piedpiper variables."
+        default: "default_vars.d"
+      version:
+        type: string
+        description: "Piedpiper version"
+  pi_sast_pipe_vars:
+    type: object
+    properties:
+      run_pipe:
+        type: boolean
+        description: Execute the pipe?
+        default: "True"
+      url:
+        type: string
+        description: |
+          Base URL of the remote executor API. This
+          will be the OpenFaaS base URL.
+      version:
+        type: string
+        description: Version of the function to use
+        default: "latest"
+  pi_style_pipe_vars:
+    type: object
+    properties:
+      run_pipe:
+        type: boolean
+        description: Execute the pipe?
+        default: "True"
+      url:
+        type: string
+        description: |
+          Base URL of the remote executor API. This
+          will be the OpenFaaS base URL.
+      version:
+        type: string
+        description: Version of the function to use
+        default: "latest"
+  pi_validate_pipe_vars:
+    type: object
+    properties:
+      policy:
+        type: object
+        properties:
+          enabled:
+            type: boolean
+            description: "Enable validation of PiedPiper vars"
+            default: "True"
+          enforcing:
+            type: boolean
+            description: "Fail on validation failure or just warn"
+            default: "True"
+          version:
+            type: string
+            description: "Version of policy to use. Corresponds to a directory in the validation repository"
+  ci:
+    type: object
+    properties:
+      ci_provider:
+        type: string
+        description: "CI Provider taken from pi_global_vars. Used for validation function"
+      ci_provider_config:
+        type: object
+        description: "Dict representation of the CI provider configuration file. .gitlab-ci.yml"
