@@ -1,0 +1,4 @@
+---
+pi_sast:
+  - name: "*.py"
+    sast: pybandit
