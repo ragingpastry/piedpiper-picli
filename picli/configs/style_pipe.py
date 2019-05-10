@@ -24,13 +24,13 @@ class StylePipeConfig(BasePipeConfig):
     {base_dir}/piedpiper.d/{vars_dir}/pipe_vars.d/pi_style.yml
     """
 
-    def __init__(self, base_config, debug):
+    def __init__(self, base_config):
         """
         Call the superclass init to build BaseConfig object,
         pipe_configs, and run_configs, then validate.
         :param base_config:
         """
-        super(StylePipeConfig, self).__init__(base_config, debug)
+        super(StylePipeConfig, self).__init__(base_config)
         self._validate()
 
     @property

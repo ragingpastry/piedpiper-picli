@@ -1,4 +1,5 @@
 import abc
+
 import picli
 from picli import logger
 from picli import util
@@ -9,9 +10,8 @@ LOG = logger.get_logger(__name__)
 class Base(object):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, base_config, debug):
-        self._base_config = base_config
-        self.debug = debug
+    def __init__(self, base_config):
+        self.base_config = base_config
 
     @abc.abstractmethod
     def execute(self):
@@ -22,7 +22,7 @@ class Base(object):
         LOG.info(message)
 
 
-def execute_subcommand(config, subcommand, debug):
+def execute_subcommand(config, subcommand):
     """
     Dynamically discover a subcommand module and class based on
     the subcommand we are executing.
@@ -36,7 +36,12 @@ def execute_subcommand(config, subcommand, debug):
     command_module = getattr(picli.command, subcommand)
     command = getattr(command_module, util.camelize(subcommand))
 
-    return command(config, debug).execute()
+    return command(config).execute()
+
+
+def execute_sequence(sequence, config):
+    for action in sequence:
+        execute_subcommand(config, action)
 
 
 def get_sequence(step):

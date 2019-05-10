@@ -1,5 +1,6 @@
 import click
 from picli.command import base
+from picli.config import BaseConfig
 from picli import logger
 
 LOG = logger.get_logger(__name__)
@@ -14,8 +15,8 @@ def lint(context):
     :param context:
     :return: None
     """
-    config_file = context.obj.get('args')['config']
     debug = context.obj.get('args')['debug']
+    config = BaseConfig(context.obj.get('args')['config'], debug)
     sequence = base.get_sequence('lint')
-    for action in sequence:
-        base.execute_subcommand(config_file, action, debug)
+    base.execute_sequence(sequence, config)
+

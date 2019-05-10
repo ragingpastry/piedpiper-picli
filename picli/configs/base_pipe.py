@@ -20,13 +20,13 @@ class BasePipeConfig(object):
 
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, base_config, debug):
+    def __init__(self, base_config):
         """
         Builds a BaseConfig object, run configurations,
         and a pipe_config based on the subclasses' name attr.
-        :param base_config:
+        :param base_config: An instantiated picli.config.BaseConfig instance
         """
-        self.base_config = BaseConfig(base_config, debug)
+        self.base_config = base_config
         self.run_config = self._build_run_config()
         self.pipe_config = self._build_pipe_config()
 

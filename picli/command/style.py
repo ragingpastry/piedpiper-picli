@@ -1,5 +1,6 @@
 import click
 from picli.command import base
+from picli.config import BaseConfig
 from picli.configs.style_pipe import StylePipeConfig
 from picli import logger
 from picli import util
@@ -9,8 +10,8 @@ LOG = logger.get_logger(__name__)
 
 
 class Style(base.Base):
-    def __init__(self, base_config, debug):
-        super(Style, self).__init__(base_config, debug)
+    def __init__(self, config):
+        super(Style, self).__init__(config)
 
     def execute(self):
         """
@@ -42,8 +43,7 @@ class Style(base.Base):
 @click.command()
 @click.pass_context
 def style(context):
-    config_file = context.obj.get('args')['config']
     debug = context.obj.get('args')['debug']
+    config = BaseConfig(context.obj.get('args')['config'], debug)
     sequence = base.get_sequence('style')
-    for action in sequence:
-        base.execute_subcommand(config_file, action, debug)
+    base.execute_sequence(sequence, config)

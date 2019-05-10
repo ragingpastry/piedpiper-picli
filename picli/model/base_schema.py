@@ -4,12 +4,18 @@ from marshmallow import RAISE
 from marshmallow import ValidationError
 from marshmallow import validates
 
+class PiStorageSchema(Schema):
+    url = fields.Str(required=True)
+    access_key = fields.Str(required=True)
+    secret_key = fields.Str(required=True)
 
 class PiGlobalVarsSchema(Schema):
     project_name = fields.Str(required=True)
     ci_provider = fields.Str(required=True)
     vars_dir = fields.Str(required=True)
     version = fields.Str(required=True)
+    gman_url = fields.Str(required=True)
+    storage = fields.Nested(PiStorageSchema)
 
     @validates
     def validate_ci_provider(self, value):

@@ -20,13 +20,13 @@ class ValidatePipeConfig(BasePipeConfig):
     Subclasses BasePipeConfig.
     """
 
-    def __init__(self, base_config, debug):
+    def __init__(self, base_config):
         """
         Initialize a ValidatePipeConfig object and returns None.
         :param base_config:
         """
-        super(ValidatePipeConfig, self).__init__(base_config, debug)
-        self.pipe_configs = self._build_pipe_configs(base_config, debug)
+        super(ValidatePipeConfig, self).__init__(base_config)
+        self.pipe_configs = self._build_pipe_configs(base_config)
         self._validate()
 
     @property
@@ -68,7 +68,7 @@ class ValidatePipeConfig(BasePipeConfig):
                 util.safe_load_file(self.base_config.ci_provider_file)
         }
 
-    def _build_pipe_configs(self, base_config, debug):
+    def _build_pipe_configs(self, base_config):
         """
         Builds a list of PipeConfig objects based on
         the contents of the picli.configs package directory so
@@ -87,7 +87,7 @@ class ValidatePipeConfig(BasePipeConfig):
         for pipe in pipes:
             pipe_config_module = getattr(importlib.import_module(f'picli.configs.{pipe}'),
                                          f'{util.camelize(pipe)}Config')
-            pipe_config = pipe_config_module(base_config, debug)
+            pipe_config = pipe_config_module(base_config)
             pipe_configs.append(pipe_config)
 
         return pipe_configs
