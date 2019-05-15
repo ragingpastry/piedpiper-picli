@@ -51,10 +51,6 @@ def merge_dicts(a: Dict, b: Dict) -> Dict:
     return a
 
 
-def render_runvars():
-    pass
-
-
 def generate_hashsum(input_file):
     hash = hashlib.sha256()
     byte_array = bytearray(128 * 1024)
@@ -101,7 +97,7 @@ def safe_load(string):
     try:
         return yaml.safe_load(string) or {}
     except yaml.scanner.ScannerError as e:
-        print(e)
+        sysexit_with_message(str(e))
 
 
 def safe_load_file(filename):
@@ -118,8 +114,10 @@ def safe_dump(data):
                      default_flow_style=False,
                      explicit_start=True)
 
+
 def generate_run_id():
     return str(uuid.uuid4())
+
 
 def sysexit_with_message(msg, code=1):
     LOG.critical(msg)
@@ -156,6 +154,7 @@ def request_new_task_id(run_id=None,
             LOG.info
         id = r.json()['task']['task_id']
         return id
+
 
 def get_artifact_uri(hash=None, gman_url=None):
         try:
@@ -194,6 +193,7 @@ def wait_for_task_status(task_id=None, status=None, gman_url=None, debug=False, 
             sysexit_with_message(message)
         else:
             # Obviously this will have to change. We should instead wait for ALL event status' to be True
+            print(r.json())
             for event in r.json():
                 if event.get('status') == status:
                     return True
@@ -212,3 +212,5 @@ def download_artifact(bucket_name, object_name, file_path, url, access_key, secr
                         secure=False
                         )
     return minioClient.fget_object(bucket_name, object_name, file_path)
+
+

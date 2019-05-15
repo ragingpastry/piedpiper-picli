@@ -4,8 +4,9 @@ pi_global_vars:
   ci_provider: "gitlab-ci"
   vars_dir: "default_vars.d"
   version: "0.0.0"
-  gman_url: "http://localhost:8089/gman"
+  gman_url: "http://172.17.0.1:8089/gman"
   storage:
     url: "172.17.0.1:9000"
     access_key: "1EPHH13NICEJ119QPGL6"
     secret_key: "TKKUm6IAVPgAv8N++4BICQSJD5DPQqQNcuy1+k6t"
+

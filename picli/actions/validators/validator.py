@@ -167,23 +167,3 @@ class Validator(base.Base):
             else:
                 LOG.warn(json.dumps(result_list, indent=4))
         LOG.success("Validation completed successfully.")
-
-    def _is_deduplicated(self, input_file):
-        file_hash = util.generate_hashsum(input_file)
-
-        try:
-            if self.config.debug:
-                LOG.info(f'Sending hash of {input_file} to {self.url}')
-            r = requests.get(f"{self.config.base_config.gman_url}/hash/{file_hash}")
-        except requests.exceptions.RequestException as e:
-            message = f'Failed to send hash to {self.config.base_config.gman_url}. \n\n{e}'
-            util.sysexit_with_message(message)
-        else:
-            if r.status_code == 302:
-                if self.config.debug:
-                    LOG.info(f'Hashsum found')
-                return r.json()
-            elif r.status_code == 404:
-                if self.config.debug:
-                    LOG.info('Hashsum not found')
-                return False

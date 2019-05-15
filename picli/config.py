@@ -1,4 +1,5 @@
 import os
+import tempfile
 
 from picli.model import base_schema
 from picli import logger
@@ -10,23 +11,31 @@ LOG = logger.get_logger(__name__)
 class BaseConfig(object):
 
     def __init__(self, config, debug):
-        self.base_dir = self._find_base_dir(config)
+        self.debug = debug
+        self.base_path = self._find_base_dir(config)
+        self.piedpiper_dir = self._set_piedpiper_dir()
         self.config = self._read_config(config)
         self._state_file = f"{self.state_directory}/.pi_state.yml"
         self._create_state()
-        self.run_id = False
-        self.debug = debug
+        self.run_id = self._generate_run_id()
         self._validate()
+
+    def _generate_run_id(self):
+        run_id = util.generate_run_id()
+        run_id_state = {
+            'run_id': run_id
+        }
+        if self.debug:
+            LOG.info(util.safe_dump(run_id_state))
+        self.update_state(run_id_state)
+        return run_id
 
     @property
     def state_directory(self):
         return f"/tmp/piedpiper/{self.global_vars['project_name']}"
 
     def _create_state(self):
-        if not os.path.isdir(self.state_directory):
-            os.makedirs(self.state_directory)
-        if os.path.isfile(self._state_file):
-            open(self._state_file, 'w').close()
+        os.makedirs(self.state_directory, exist_ok=True)
         default_state = {
             'validate': {}
         }
@@ -98,7 +107,10 @@ class BaseConfig(object):
             util.sysexit_with_message(message)
 
     @property
-    def piedpiper_dir(self):
+    def base_dir(self):
+        return self.base_path
+
+    def _set_piedpiper_dir(self):
         """
         Property defining the location of the pipedpiper.d directory.
 
