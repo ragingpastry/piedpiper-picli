@@ -2,7 +2,7 @@ import click
 from picli.command import base
 from picli.configs.validate_pipe import ValidatePipeConfig
 from picli import logger
-from picli.validators.validator import Validator
+from picli.actions.validators.validator import Validator
 
 LOG = logger.get_logger(__name__)
 

@@ -3,13 +3,14 @@ import requests
 import json
 import zipfile
 
+from picli.actions import base
 from picli import logger
 from picli import util
 
 LOG = logger.get_logger(__name__)
 
 
-class Validator(object):
+class Validator(base.Base):
     """Validation object to perform checks against a PiCli run.
 
     Creates a zip of the configuration files supplied by
@@ -21,12 +22,12 @@ class Validator(object):
     will warn the user and continue with the execution.
 
     """
-    def __init__(self, base_config):
+    def __init__(self, pipe_config):
         """
         Initialize the Validator.
         :param base_config: ValidatePipeConfig object
         """
-        self.config = base_config
+        self.pipe_config = pipe_config
 
     @property
     def name(self):
@@ -34,15 +35,7 @@ class Validator(object):
 
     @property
     def url(self):
-        url_version = self.config.version.replace('.', '-')
-        if self.config.version == 'latest':
-            return f'{self.config.endpoint}/piedpiper-{self.name}-function'
-        else:
-            return f'{self.config.endpoint}/piedpiper-{self.name}-function-{url_version}'
-
-    @property
-    def enabled(self):
-        return self.config.run_pipe
+        return super().url
 
     def zip_files(self, destination):
         """
@@ -54,10 +47,10 @@ class Validator(object):
             zip_file = zipfile.ZipFile(
                 f'{destination}/validation.zip', 'w', zipfile.ZIP_DEFLATED
             )
-            if self.config.debug:
+            if self.pipe_config.debug:
                 message = f'Writing run_vars.yml to zip'
                 LOG.info(message)
-            zip_file.writestr("run_vars.yml", self.config.dump_configs())
+            zip_file.writestr("run_vars.yml", self.pipe_config.dump_configs())
             zip_file.close()
             return zip_file
         except Exception as e:
@@ -69,7 +62,7 @@ class Validator(object):
             zip_file = self.zip_files(temp_dir)
             files = [('files', open(zip_file.filename, 'rb'))]
             try:
-                if self.config.debug:
+                if self.pipe_config.debug:
                     LOG.info(f'Sending zipfile to {self.url}')
                 r = requests.post(self.url, files=files)
             except requests.exceptions.RequestException as e:
@@ -100,7 +93,7 @@ class Validator(object):
                     if value['errors']:
                         result_list.append(stage_result)
         if len(result_list):
-            if self.config.policy_enforcing:
+            if self.pipe_config.policy_enforcing:
                 util.sysexit_with_message(
                     json.dumps(result_list, indent=4)
                 )

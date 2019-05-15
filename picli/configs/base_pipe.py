@@ -1,4 +1,5 @@
 import abc
+from itertools import filterfalse
 import os
 
 from picli.config import BaseConfig
@@ -55,37 +56,26 @@ class BasePipeConfig(object):
         the other group_vars files to override the values in all.yml
         :return: list
         """
+        group_vars_dir = f'{self.base_config.vars_dir}/group_vars.d'
 
         group_configs = []
-        if os.path.isdir(f'{self.base_config.vars_dir}/group_vars.d/'):
+        if os.path.isdir(group_vars_dir):
             for root, dirs, files in os.walk(
                     f'{self.base_config.vars_dir}/group_vars.d/'
             ):
-                if len(files) == 0:
-                    message = f'group_vars is blank in {self.base_config.vars_dir}'
+                if not len(files):
+                    message = f'No group_vars found in {self.base_config.vars_dir}'
                     util.sysexit_with_message(message)
                 for file in files:
-                    if file == 'all.yml':
-                        with open(os.path.join(root, file)) as f:
-                            group_config = f.read()
-                            group_configs.append(util.safe_load(group_config))
+                    with open(os.path.join(root, file)) as f:
+                        group_config = f.read()
+                        group_configs.append(
+                            {'file': file, 'config': util.safe_load(group_config)}
+                        )
+            return group_configs
         else:
             message = f'Failed to read group_vars in {self.base_config.vars_dir}.'
             util.sysexit_with_message(message)
-
-        for root, dirs, files in os.walk(
-                f'{self.base_config.vars_dir}/group_vars.d/'
-        ):
-            if len(files) == 0:
-                message = f'No group_vars found in {self.base_config.vars_dir}'
-                util.sysexit_with_message(message)
-            for file in files:
-                if file == 'all.yml':
-                    continue
-                with open(os.path.join(root, file)) as f:
-                    group_config = f.read()
-                    group_configs.append(util.safe_load(group_config))
-        return group_configs
 
     def _read_file_vars(self):
         """
@@ -124,9 +114,9 @@ class BasePipeConfig(object):
         """
         group_configs = []
         for group in self._read_group_vars():
-            for step, config in group.items():
+            for step, config in group['config'].items():
                 if step == f'pi_{self.name}':
-                    run_config = RunConfig(config, self.base_config)
+                    run_config = RunConfig(group['file'], config, self.base_config)
                     for file_definition in run_config.files:
                         for file, file_name in self._read_file_vars():
                             file_config = util.safe_load(file)
@@ -139,7 +129,7 @@ class BasePipeConfig(object):
                                 util.sysexit_with_message(message)
                     group_configs.append(run_config)
                 elif self.name == 'validate':
-                    run_config = RunConfig(config, self.base_config)
+                    run_config = RunConfig(group['file'], config, self.base_config)
                     for file_definition in run_config.files:
                         for file, file_name in self._read_file_vars():
                             file_config = util.safe_load(file)
@@ -151,6 +141,11 @@ class BasePipeConfig(object):
                                           f'\n\nInvalid Key: {e}'
                                 util.sysexit_with_message(message)
                     group_configs.append(run_config)
+        if not len(group_configs):
+            message = f'No group configs found for pi_{self.name} in' \
+                      f'{self.base_config.vars_dir}/group_vars.d/'
+            util.sysexit_with_message(message)
+
         return group_configs
 
     def _build_run_config(self):
@@ -159,8 +154,8 @@ class BasePipeConfig(object):
         steps to use.
         :return: RunConfig object
         """
-        group_configs = self._build_group_configs()
-        run_config = self._merge_run_configs(group_configs)
+        run_configs = self._build_group_configs()
+        run_config = self._merge_run_configs(run_configs)
         return run_config
 
     def _merge_run_configs(self, run_configs):
@@ -172,16 +167,19 @@ class BasePipeConfig(object):
         :param run_configs: List of RunConfig objects build from reading group_vars.d
         :return: RunConfig object
         """
-        merged_run_config = run_configs[0]
-        for run_config in run_configs[1:]:
-            for run_config_file in run_config.files:
-                if run_config_file['file'] not in [file['file']
-                                                   for file in merged_run_config.files]:
-                    merged_run_config.files.append(run_config_file)
-                for merged_config_file in merged_run_config.files:
-                    if run_config_file['file'] == merged_config_file['file']:
-                        merged_config_file.update(run_config_file)
-        return merged_run_config
+        default_run_configs = [
+            rc_default for rc_default in run_configs
+            if rc_default.name == 'all.yml']
+        other_run_configs = [
+            rc_other for rc_other in run_configs
+            if rc_other.name != 'all.yml']
+        for run_config in default_run_configs:
+            run_config.files[:] = filterfalse(
+                lambda x: x in [
+                    file for rc in other_run_configs
+                    for file in rc.files
+                ], run_config.files)
+        return run_configs
 
     @property
     def debug(self):
@@ -205,9 +203,19 @@ class BasePipeConfig(object):
         return self.pipe_config[f'pi_{self.name}_pipe_vars']['version']
 
     def dump_configs(self):
-        run_config = {}
-        file_config = [file for file in self.run_config.files]
-        util.merge_dicts(run_config, {'file_config': file_config})
-        util.merge_dicts(run_config, self.base_config.config)
-        util.merge_dicts(run_config, self.pipe_config)
-        return util.safe_dump(run_config)
+        merged_run_configs = {}
+        file_configs = [
+            file
+            for run_config in self.run_config
+            for file in run_config.files
+        ]
+        group_configs = [
+            group_config
+            for run_config in self.run_config
+            for group_config in run_config.config
+        ]
+        util.merge_dicts(merged_run_configs, {'file_config': file_configs})
+        util.merge_dicts(merged_run_configs, {'group_configs': group_configs})
+        util.merge_dicts(merged_run_configs, self.base_config.config)
+        util.merge_dicts(merged_run_configs, self.pipe_config)
+        return util.safe_dump(merged_run_configs)

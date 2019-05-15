@@ -1,6 +1,5 @@
 import anyconfig
 from typing import Dict
-import os
 import re
 import sys
 import yaml
@@ -76,18 +75,3 @@ def safe_dump(data):
 def sysexit_with_message(msg, code=1):
     LOG.critical(msg)
     sys.exit(code)
-
-
-def find_base_dir(base_config_file):
-    """
-    Find base-level directory of the repository given
-    a pipedpiper global_vars configuration file.
-    We basically hardcode this to be two levels up from the
-    configuration file
-    :param base_config_file:
-    :return: string
-    """
-    base_dir = os.path.dirname(os.path.dirname(base_config_file))
-    if not base_dir:
-        base_dir = '.'
-    return base_dir

@@ -15,22 +15,16 @@ class Sast(base.Base):
     def execute(self):
         self.print_info()
         sast_pipe_config = SastPipeConfig(self._base_config, self.debug)
-        if self.debug:
-            message = f'Debugging run_vars\n\n{sast_pipe_config.dump_configs()}'
-            LOG.info(message)
         if sast_pipe_config.run_pipe:
-            sast_analyzers = set()
-            for file in sast_pipe_config.run_config.files:
-                sast_analyzers.add(file['sast'])
-            for sast_analyzer in sorted(sast_analyzers):
+            for run_config in sast_pipe_config.run_config:
                 sast_module = getattr(
                     importlib.import_module(
-                        f'picli.sast.{sast_analyzer}'
+                        f'picli.actions.sast.{run_config.config[0]["sast"]}'
                     ),
-                    f'{util.camelize(sast_analyzer)}'
+                    f'{util.camelize(run_config.config[0]["sast"])}'
                 )
-                sast = sast_module(sast_pipe_config, sast_pipe_config.run_config)
-                sast.execute()
+                sast_analyzer = sast_module(sast_pipe_config, run_config)
+                sast_analyzer.execute()
         else:
             LOG.warn("SAST step not enabled.\n\nSkipping...")
 

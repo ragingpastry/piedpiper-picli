@@ -10,7 +10,7 @@ LOG = logger.get_logger(__name__)
 class BaseConfig(object):
 
     def __init__(self, config, debug):
-        self.base_path = self._find_base_dir(config)
+        self.base_dir = self._find_base_dir(config)
         self.config = self._read_config(config)
         self.debug = debug
         self._validate()
@@ -23,9 +23,11 @@ class BaseConfig(object):
         configuration file. This will be the base directory
         that all other methods will assume.
         """
-        base_dir = os.path.dirname(os.path.dirname(config))
-        if not base_dir:
-            base_dir = '.'
+        base_dir = os.path.normpath(
+            os.path.join(
+                os.path.abspath(config),
+                '../..')
+        )
         return base_dir
 
     def _read_config(self, config):
@@ -69,16 +71,13 @@ class BaseConfig(object):
         :return:
         """
 
-        if os.path.isdir(self.piedpiper_dir + self.global_vars['vars_dir']):
-            return self.piedpiper_dir + self.global_vars['vars_dir']
+        vars_dir = os.path.join(self.piedpiper_dir, self.global_vars['vars_dir'])
+        if os.path.isdir(vars_dir):
+            return vars_dir
         else:
             message = f"Piedpiper vars directory doesn't exist in {self.piedpiper_dir}." \
                       f"You gave {self.global_vars['vars_dir']}."
             util.sysexit_with_message(message)
-
-    @property
-    def base_dir(self):
-        return self.base_path
 
     @property
     def piedpiper_dir(self):
@@ -87,8 +86,8 @@ class BaseConfig(object):
 
         :return: String of path to piedpiper.d directory.
         """
-        piedpiper_dir = self.base_path + '/' + 'piedpiper.d/'
-        if os.path.isdir(piedpiper_dir):
+        piedpiper_dir = os.path.join(self.base_dir, 'piedpiper.d')
+        if os.path.isdir(f'{piedpiper_dir}'):
             return piedpiper_dir
         else:
             message = f"Piedpiper directory doesn't exist in {piedpiper_dir}."
@@ -111,7 +110,7 @@ class BaseConfig(object):
         :return: .gitlab-ci.yml
         """
         if self.global_vars['ci_provider'] == 'gitlab-ci':
-            return '.gitlab-ci.yml'
+            return f'{self.base_dir}/.gitlab-ci.yml'
 
     @property
     def version(self):

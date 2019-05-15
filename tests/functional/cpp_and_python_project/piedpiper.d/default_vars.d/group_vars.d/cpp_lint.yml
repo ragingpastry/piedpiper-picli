@@ -1,6 +1,6 @@
 ---
 pi_style:
-  - name: "*.cc"
+  - name: "**/**.cc"
     styler: cpplint
-  - name: "*.h"
+  - name: "**/**.h"
     styler: cpplint
