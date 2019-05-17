@@ -15,7 +15,7 @@ class Sast(base.Base):
 
     def execute(self):
         self.print_info()
-        sast_pipe_config = SastPipeConfig(self._base_config, self.debug)
+        sast_pipe_config = SastPipeConfig(self.base_config)
         if sast_pipe_config.run_pipe:
             for run_config in sast_pipe_config.run_config:
                 sast_module = getattr(

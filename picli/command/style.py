@@ -25,7 +25,7 @@ class Style(base.Base):
         :return:
         """
         self.print_info()
-        style_pipe_config = StylePipeConfig(self._base_config, self.debug)
+        style_pipe_config = StylePipeConfig(self.base_config)
         if style_pipe_config.run_pipe:
             for run_config in style_pipe_config.run_config:
                 style_module = getattr(

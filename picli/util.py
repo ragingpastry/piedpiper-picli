@@ -193,7 +193,6 @@ def wait_for_task_status(task_id=None, status=None, gman_url=None, debug=False, 
             sysexit_with_message(message)
         else:
             # Obviously this will have to change. We should instead wait for ALL event status' to be True
-            print(r.json())
             for event in r.json():
                 if event.get('status') == status:
                     return True

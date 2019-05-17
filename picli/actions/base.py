@@ -219,7 +219,6 @@ class Base(object):
                     self.pipe_config.base_config.storage.get('access_key'),
                     self.pipe_config.base_config.storage.get('secret_key'),
                 )
-                print(artifact_object)
                 action_state = {
                     self.name: {
                         'state': 'uploaded',
