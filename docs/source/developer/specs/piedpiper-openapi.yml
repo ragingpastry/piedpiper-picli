@@ -1,10 +1,10 @@
 swagger: "2.0"
 info:
-  title: PiedPiper API
+  title: PiperCI API
   version: "0.0.0"
-host: api.piedpiper.net
+host: api.piperci.net
 paths:
-  /functions/piedpiper-flake8-function:
+  /functions/piperci-flake8-function:
     post:
       summary: Invoke flake8 on input
       description: |

@@ -1,0 +1,58 @@
+---
+stages:
+  - name: validate
+    deps:
+    resources:
+      - name: noop
+        uri: /function/piperci-noop-gateway
+    config:
+      - resource: noop
+        policy_version: 0.0.0
+  - name: style
+    deps:
+      - validate
+    resources:
+      - name: noop
+        uri: /function/piperci-noop-gateway
+    config:
+      - files: "*.py"
+        resource: noop
+      - files: "charon/model/*"
+        resource: noop
+        exclude: true
+  - name: sast
+    deps:
+      - validate
+    resources:
+      - name: noop
+        uri: /function/piperci-noop-gateway
+    config:
+      - files: "*"
+        resource: noop
+  - name: unit
+    deps:
+    resources:
+      - name: noop
+        uri: /function/piperci-tox-controller
+    config:
+      - resource: noop
+        tox-command: tox
+        docker-image: centos:7
+        # run-cmd: 'echo hello world'
+  - name: build
+    deps:
+    resources:
+      - name: noop
+        uri: /function/piperci-noop-controller
+    config:
+      - docker-file: "Dockerfile"
+        resource: noop
+  - name: package
+    deps:
+      - build
+    resources:
+      - name: noop
+        uri: /function/piperci-noop-gateway
+    config:
+      - files: "*"
+        resource: noop

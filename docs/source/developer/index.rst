@@ -2,9 +2,9 @@ Developer's Guide
 =================
 
 This section containers information for developers who are
-working on Piedpiper. 
+working on PiperCI. 
 
-If you are just getting started with PiedPiper please read these
+If you are just getting started with PiperCI please read these
 documents. If you find any information that is missing a Pull Request
 is more than welcome.
 

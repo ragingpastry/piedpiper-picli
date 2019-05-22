@@ -12,7 +12,7 @@ PiCli has two supported installation methods, Pip and Docker. PiCli is supported
 both Windows and Linux based operating systems. If you run into issues please open
 a `bug report`_
 
-.. _`bug report`: https://github.com/AFCYBER-DREAM/piedpiper-picli/issues
+.. _`bug report`: https://github.com/AFCYBER-DREAM/piperci-picli/issues
 
 Pip
 ***
@@ -76,7 +76,7 @@ Prerequisites
 
 .. code-block:: bash
 
-  docker run -v $(pwd):/code -it piedpiper-picli:latest /bin/sh
+  docker run -v $(pwd):/code -it piperci-picli:latest /bin/sh
   cd /code
   picli --help
   /code # picli --help

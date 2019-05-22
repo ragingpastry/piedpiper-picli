@@ -8,13 +8,13 @@ Architecture
 .. contents:: Table of Contents
     :local:
 
-PiedPiper is designed around the concept of pipes. Each phase in the CI/CD
+PiperCI is designed around the concept of pipes. Each phase in the CI/CD
 pipeline is considered a ``pipe``. Each ``pipe`` has its own configuration
-options, runtime environment, and invokation. PiedPiper's main configuration
-interface is made available through YAML files inside of the ``piedpiper.d/``
+options, runtime environment, and invokation. PiperCI's main configuration
+interface is made available through YAML files inside of the ``piperci.d/``
 directory which lives in your software project's repository.
 
-The architecture of PiedPiper is split into two main components:
+The architecture of PiperCI is split into two main components:
   - The `PiCli`_ client and
   - the `remote functions`_ which perform the pipe execution
 
@@ -22,48 +22,48 @@ The architecture of PiedPiper is split into two main components:
 PiCli
 *****
 
-The PiedPiper client. This component handles all user interaction with the system and is the
+The PiperCI client. This component handles all user interaction with the system and is the
 main entrypoint to the execution environment. PiCli will read through user-defined variables
-in the ``piedpiper.d/`` directory and create various ``run_vars`` configuration objects. These
+in the ``piperci.d/`` directory and create various ``run_vars`` configuration objects. These
 ``run_vars`` define how PiCli will be executing the pipes and even which pipes get executed.
 
 
 Remote Functions
 ****************
 
-The remote functions are the meat-and-potatoes behind PiedPiper. Our current implementation utilizes
-OpenFaaS, a Functions-as-a-Service framework, to orchestrate our PiedPiper pipeline execution jobs.
+The remote functions are the meat-and-potatoes behind PiperCI. Our current implementation utilizes
+OpenFaaS, a Functions-as-a-Service framework, to orchestrate our PiperCI pipeline execution jobs.
 Each component that needs to be executed will make a call to an OpenFaaS function and return the results
 of that run. 
 
 Some examples of these remote functions are:
-  - https://github.com/AFCYBER-DREAM/piedpiper-validator-faas
-  - https://github.com/AFCYBER-DREAM/piedpiper-flake8-faas
-  - https://github.com/AFCYBER-DREAM/piedpiper-cpplint-faas
+  - https://github.com/AFCYBER-DREAM/piperci-validator-faas
+  - https://github.com/AFCYBER-DREAM/piperci-flake8-faas
+  - https://github.com/AFCYBER-DREAM/piperci-cpplint-faas
 
-These functions serve as an HTTP API wrapper around the chosen tool. The goal of Piedpiper is simply wrap
+These functions serve as an HTTP API wrapper around the chosen tool. The goal of PiperCI is simply wrap
 these external tools and return all output. We do not want to get in the way of developers and their normal
 interactions with these popular tools.
 
 The validation function however is special. This function provides the mechanism for validating CI configurations via
 another Git repository. For more information on how this function works please see the `README`_
 
-.. _README: https://github.com/AFCYBER-DREAM/piedpiper-validator-faas/blob/master/README.md
+.. _README: https://github.com/AFCYBER-DREAM/piperci-validator-faas/blob/master/README.md
 
 
 OpenFaaS
 ********
 
-OpenFaaS is an integral component to PiedPiper because of its role in hosting the remote functions
+OpenFaaS is an integral component to PiperCI because of its role in hosting the remote functions
 which PiCli calls. While OpenFaaS itself isn't a requirement, something must act as a remote execution
-environment which implements an API that Piedpiper expects. This definition of this API and the
-requests and response which PiCli expects can be found in the `PiedPiper API`_ section.
+environment which implements an API that PiperCI expects. This definition of this API and the
+requests and response which PiCli expects can be found in the `PiperCI API`_ section.
 
 
-PiedPiper API
+PiperCI API
 *************
 
-PiedPiper's client and remote functions must pass data to each other over a defined API. Currently, PiedPiper
+PiperCI's client and remote functions must pass data to each other over a defined API. Currently, PiperCI
 uses a ZIP file containing both the project source files to lint/test/build and a YAML file called ``run_vars.yml``.
 This ``run_vars`` file contains the configuration and specification of the remote execute job.
 
@@ -74,7 +74,7 @@ Directory Structure
 
 .. code-block:: bash
 
-  piedpiper.d
+  piperci.d
   ├── default_vars.d
   │   ├── file_vars.d
   │   │   └── src_config.yml
@@ -91,45 +91,45 @@ Directory Structure
 pi_global_vars.yml
 ------------------
 
-PiedPiper's main configuration is controlled via it ``pi_global_vars.yml``
+PiperCI's main configuration is controlled via it ``pi_global_vars.yml``
 file. This file contains configuration options which are not tied to 
 a specific pipe, file, or group.
 
 **vars_dir**
-  This configuration option controls the piedpiper variable directory.
+  This configuration option controls the piperci variable directory.
   By default this is set to ``default_vars.d``, but can be configured to be 
-  any direct child directory under ``piedpiper.d``. 
+  any direct child directory under ``piperci.d``. 
   The intention of this directory is to allow developers to create a clone of 
-  the Piedpiper configuration to test various variable changes or different 
+  the PiperCI configuration to test various variable changes or different 
   versions of it's pipelines without modifying the production variables.
 
 **ci_provider**
-  This configuration option informs PiedPiper what CI provider is being used.
+  This configuration option informs PiperCI what CI provider is being used.
   PiCli will then read the CI-provider configuration file and pass its 
   configuration to the validation function (if enabled). 
   At the moment we only support Gitlab-CI so the ``.gitlab-ci.yml``
   file is the only thing being passed to the validator function.
 
 **version**
-  This option specifies the version of PiedPiper that is being used. 
-  PiedPiper is version controlled so that repeatable CI builds are possible.
+  This option specifies the version of PiperCI that is being used. 
+  PiperCI is version controlled so that repeatable CI builds are possible.
 
 
 default_vars.d/
 ---------------
 
-This directory contains the default configuration files for PiedPiper.
+This directory contains the default configuration files for PiperCI.
 
 default_vars.d/group_vars.d/
 ----------------------------
 
 This directory contains group-specific configurations for pipelines.
 Each file in this directory is considered a "group" and will be fed into 
-PiedPiper as a Run. By default we provide an ``all.yml`` file which 
-defines a ``noop`` operation for every pipeline that PiedPiper manages.
+PiperCI as a Run. By default we provide an ``all.yml`` file which 
+defines a ``noop`` operation for every pipeline that PiperCI manages.
 
 This is the default ``all.yml`` file which is provided when bootstraping
-a project with PiedPiper
+a project with PiperCI
 
 .. code-block:: yaml
 
@@ -143,7 +143,7 @@ a project with PiedPiper
 
 This default group will apply the ``noop`` styler and SAST configurations to all
 files in the directory. By doing this we ensure that a brand-new project pass the
-PiedPiper Pipeline and that every file is accounted for, even if that file is
+PiperCI Pipeline and that every file is accounted for, even if that file is
 passed to a ``noop`` function.
 
 default_vars.d/file_vars.d/
@@ -192,9 +192,9 @@ Here is an example pipe_vars.d configuration file
 **version**
   The version of the pipe function to use. 
   This corresponds to a function URL
-  I.E. ``http://172.17.0.1:8080/function/piedpiper-flake8-function-0-0-1``
+  I.E. ``http://172.17.0.1:8080/function/piperci-flake8-function-0-0-1``
   A version of ``latest`` will simply refer to 
-  ``http://172/17.0.1:8080/function/piedpiper-flake8-function``
+  ``http://172/17.0.1:8080/function/piperci-flake8-function``
 
 **url**
   The baseurl to use when invoking the function. 

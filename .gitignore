@@ -22,3 +22,4 @@ htmlcov/
 pytestdebug.log
 .python-version
 coverage.xml
+*state/

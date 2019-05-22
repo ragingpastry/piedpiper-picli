@@ -7,7 +7,9 @@ stages:
   - generate_docker_image_push_to_nexus
 
 include:
-  - project: piedpiper/validation
+  - project: piperci/validation
+    file: .gitlab-ci.yml
+  - project: piperci/style
     file: .gitlab-ci.yml
 
 

@@ -72,7 +72,7 @@ An example run_vars.yml file may look like this:
       image: python:3.6
       include:
         - file: .gitlab-ci.yml
-          project: piedpiper/validation
+          project: piperci/validation
       stages:
         - validate
         - lint
@@ -96,25 +96,25 @@ An example run_vars.yml file may look like this:
     - file: test.sh
       sast: noop
       styler: noop
-    - file: piedpiper.d/pi_global_vars.yml
+    - file: piperci.d/pi_global_vars.yml
       sast: noop
       styler: noop
-    - file: piedpiper.d/default_vars.d/pipe_vars.d/pi_validate.yml
+    - file: piperci.d/default_vars.d/pipe_vars.d/pi_validate.yml
       sast: noop
       styler: noop
-    - file: piedpiper.d/default_vars.d/pipe_vars.d/pi_sast.yml
+    - file: piperci.d/default_vars.d/pipe_vars.d/pi_sast.yml
       sast: noop
       styler: noop
-    - file: piedpiper.d/default_vars.d/pipe_vars.d/pi_style.yml
+    - file: piperci.d/default_vars.d/pipe_vars.d/pi_style.yml
       sast: noop
       styler: noop
-    - file: piedpiper.d/default_vars.d/file_vars.d/src_config.yml
+    - file: piperci.d/default_vars.d/file_vars.d/src_config.yml
       sast: noop
       styler: noop
-    - file: piedpiper.d/default_vars.d/group_vars.d/python_lint.yml
+    - file: piperci.d/default_vars.d/group_vars.d/python_lint.yml
       sast: noop
       styler: noop
-    - file: piedpiper.d/default_vars.d/group_vars.d/all.yml
+    - file: piperci.d/default_vars.d/group_vars.d/all.yml
       sast: noop
       styler: noop
     - file: charon/functional.py

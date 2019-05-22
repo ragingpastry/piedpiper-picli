@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath('../..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'PiedPiper-PiCli'
+project = 'PiperCI-PiCli'
 copyright = '2019, DREAM Team'
 author = 'DREAM Team'
 

@@ -26,12 +26,14 @@ ENV PIP_INSTALL_ARGS="\
     -f /usr/src/picli/dist \
     "
 
+RUN apk add --update --no-cache git
+
 COPY --from=picli-builder \
     /usr/src/picli/dist \
     /usr/src/picli/dist
 
 RUN \
-    pip install ${PIP_INSTALL_ARGS} "picli" && \
+    pip install ${PIP_INSTALL_ARGS} "piperci-picli" && \
     apk del --no-cache ${BUILD_DEPS} && \
     rm -rf /root/.cache
 

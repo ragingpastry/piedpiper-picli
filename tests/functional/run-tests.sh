@@ -7,19 +7,19 @@ for project in \
     python_project; do
 
     echo "Running picli on project $project in $(dirname $0)/$project"
-    picli --config $(dirname $0)/$project/piedpiper.d/pi_global_vars.yml --debug validate
+    picli --config $(dirname $0)/$project/piperci.d/pi_global_vars.yml --debug validate
     if [[ $? -ne 0 ]]; then
         errors=$((errors+1))
     fi
-    picli --config $(dirname $0)/$project/piedpiper.d/pi_global_vars.yml --debug style
+    picli --config $(dirname $0)/$project/piperci.d/pi_global_vars.yml --debug style
     if [[ $? -ne 0 ]]; then
         errors=$((errors+1))
     fi
-    picli --config $(dirname $0)/$project/piedpiper.d/pi_global_vars.yml --debug sast
+    picli --config $(dirname $0)/$project/piperci.d/pi_global_vars.yml --debug sast
     if [[ $? -ne 0 ]]; then
         errors=$((errors+1))
     fi
-    picli --config $(dirname $0)/$project/piedpiper.d/pi_global_vars.yml --debug lint
+    picli --config $(dirname $0)/$project/piperci.d/pi_global_vars.yml --debug lint
     if [[ $? -ne 0 ]]; then
         errors=$((errors+1))
     fi

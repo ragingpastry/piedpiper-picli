@@ -9,7 +9,7 @@ Configuration
     :local:
 
 
-PiCli configuration is all handled through YAML files located in ``piedpiper.d`` inside
+PiCli configuration is all handled through YAML files located in ``piperci.d`` inside
 the project root directory. These files are meant to be highly configurable and well documented,
 but are also meant to provide a set of sensible defaults so that they don't have to be
 messed with unless you really want to.
@@ -18,7 +18,7 @@ Configuring groups
 ******************
 
 A "group" in PiCli is a grouping of files which will make up a run, or execution. Let's take
-a look at the default ``all`` group located in ``piedpiper.d/default_vars.d/group_vars.d/all.yml``
+a look at the default ``all`` group located in ``piperci.d/default_vars.d/group_vars.d/all.yml``
 
 .. code-block:: yaml
 
@@ -36,7 +36,7 @@ files in the project root directory. It also sets the `sast` of `noop` for all f
 The ``all`` group is special. It will be read first by PiCli meaning it will be providing the defaults for
 your respository. It is suggested that you do not modify the all group unless you know what you are doing.
 If you wish to define other values for different file globs in your repository then it is suggested
-that you create additional group files under ``piedpiper.d/default_vars.d/group_vars.d/``. 
+that you create additional group files under ``piperci.d/default_vars.d/group_vars.d/``. 
 
 Here is an example of a second group located in a ``python_lint.yml`` file.
 
@@ -83,11 +83,11 @@ Enable and Disabling steps
 PiCli was meant to be modular. You should be able to run specific steps by calling those in the cli, but you
 should also be able to define which steps are ran through the configuration files.
 
-Pipe configurations are made in the ``piedpiper.d/default_vars.d/pipe_vars.d/`` directory. Each step, or pipe, will
+Pipe configurations are made in the ``piperci.d/default_vars.d/pipe_vars.d/`` directory. Each step, or pipe, will
 have its own configuration file in YAML.
 
 For example, lets say we want to disable the validation pipe just for local execution. We would go into
-``piedpiper.d/default_vars.d/pipe_vars.d/`` and change ``run_pipe: True`` to ``run_pipe: False``
+``piperci.d/default_vars.d/pipe_vars.d/`` and change ``run_pipe: True`` to ``run_pipe: False``
 
 .. code-block:: yaml
 
@@ -107,8 +107,8 @@ For example, lets say we want to disable the validation pipe just for local exec
 Validation
 **********
 
-Validation is an important part of PiedPiper. The validation step will
-parse your PiedPiper configuration files under ``piedpiper.d/`` and your ``ci_provider`` configuration file and send that data off to a validation function. That validation function will then ensure that your Pipeline adheres to whatever standard is set for your project. This pipeline standard is held in an external Git repository and is meant to be configured by a team lead or Technical Director. 
+Validation is an important part of PiperCI. The validation step will
+parse your PiperCI configuration files under ``piperci.d/`` and your ``ci_provider`` configuration file and send that data off to a validation function. That validation function will then ensure that your Pipeline adheres to whatever standard is set for your project. This pipeline standard is held in an external Git repository and is meant to be configured by a team lead or Technical Director. 
 
 The validation step is meant to ensure that your Pipeline is calling the required stages with the required options based on your project's requirements.
 
@@ -146,18 +146,18 @@ PiCli will validate your ``.gitlab-ci.yml`` file to ensure that your pipeline is
   Validation completed successfully.
   --> Action: Style
   --> Executing styler noop
-  Executing noop on piedpiper.d/pi_global_vars.yml
-  Executing noop on piedpiper.d/default_vars.d/pipe_vars.d/pi_validate.yml
-  Executing noop on piedpiper.d/default_vars.d/pipe_vars.d/pi_sast.yml
-  Executing noop on piedpiper.d/default_vars.d/pipe_vars.d/pi_style.yml
-  Executing noop on piedpiper.d/default_vars.d/file_vars.d/src_config.yml
-  Executing noop on piedpiper.d/default_vars.d/group_vars.d/python_lint.yml
-  Executing noop on piedpiper.d/default_vars.d/group_vars.d/all.yml
-  Executing noop on piedpiper.d/test_vars.d/pipe_vars.d/pi_validate.yml
-  Executing noop on piedpiper.d/test_vars.d/pipe_vars.d/pi_sast.yml
-  Executing noop on piedpiper.d/test_vars.d/pipe_vars.d/pi_style.yml
-  Executing noop on piedpiper.d/test_vars.d/file_vars.d/src_config.yml
-  Executing noop on piedpiper.d/test_vars.d/group_vars.d/all.yml
+  Executing noop on piperci.d/pi_global_vars.yml
+  Executing noop on piperci.d/default_vars.d/pipe_vars.d/pi_validate.yml
+  Executing noop on piperci.d/default_vars.d/pipe_vars.d/pi_sast.yml
+  Executing noop on piperci.d/default_vars.d/pipe_vars.d/pi_style.yml
+  Executing noop on piperci.d/default_vars.d/file_vars.d/src_config.yml
+  Executing noop on piperci.d/default_vars.d/group_vars.d/python_lint.yml
+  Executing noop on piperci.d/default_vars.d/group_vars.d/all.yml
+  Executing noop on piperci.d/test_vars.d/pipe_vars.d/pi_validate.yml
+  Executing noop on piperci.d/test_vars.d/pipe_vars.d/pi_sast.yml
+  Executing noop on piperci.d/test_vars.d/pipe_vars.d/pi_style.yml
+  Executing noop on piperci.d/test_vars.d/file_vars.d/src_config.yml
+  Executing noop on piperci.d/test_vars.d/group_vars.d/all.yml
   Executing noop on charon/functional.py
   Executing noop on charon/scanner.py
   Executing noop on charon/worker.py
@@ -166,18 +166,18 @@ PiCli will validate your ``.gitlab-ci.yml`` file to ensure that your pipeline is
   Executing noop on charon/__init__.py
   --> Action: Sast
   --> Executing SAST analyzer: noop
-  Executing noop on piedpiper.d/pi_global_vars.yml
-  Executing noop on piedpiper.d/default_vars.d/pipe_vars.d/pi_validate.yml
-  Executing noop on piedpiper.d/default_vars.d/pipe_vars.d/pi_sast.yml
-  Executing noop on piedpiper.d/default_vars.d/pipe_vars.d/pi_style.yml
-  Executing noop on piedpiper.d/default_vars.d/file_vars.d/src_config.yml
-  Executing noop on piedpiper.d/default_vars.d/group_vars.d/python_lint.yml
-  Executing noop on piedpiper.d/default_vars.d/group_vars.d/all.yml
-  Executing noop on piedpiper.d/test_vars.d/pipe_vars.d/pi_validate.yml
-  Executing noop on piedpiper.d/test_vars.d/pipe_vars.d/pi_sast.yml
-  Executing noop on piedpiper.d/test_vars.d/pipe_vars.d/pi_style.yml
-  Executing noop on piedpiper.d/test_vars.d/file_vars.d/src_config.yml
-  Executing noop on piedpiper.d/test_vars.d/group_vars.d/all.yml
+  Executing noop on piperci.d/pi_global_vars.yml
+  Executing noop on piperci.d/default_vars.d/pipe_vars.d/pi_validate.yml
+  Executing noop on piperci.d/default_vars.d/pipe_vars.d/pi_sast.yml
+  Executing noop on piperci.d/default_vars.d/pipe_vars.d/pi_style.yml
+  Executing noop on piperci.d/default_vars.d/file_vars.d/src_config.yml
+  Executing noop on piperci.d/default_vars.d/group_vars.d/python_lint.yml
+  Executing noop on piperci.d/default_vars.d/group_vars.d/all.yml
+  Executing noop on piperci.d/test_vars.d/pipe_vars.d/pi_validate.yml
+  Executing noop on piperci.d/test_vars.d/pipe_vars.d/pi_sast.yml
+  Executing noop on piperci.d/test_vars.d/pipe_vars.d/pi_style.yml
+  Executing noop on piperci.d/test_vars.d/file_vars.d/src_config.yml
+  Executing noop on piperci.d/test_vars.d/group_vars.d/all.yml
   Executing noop on charon/functional.py
   Executing noop on charon/scanner.py
   Executing noop on charon/worker.py
@@ -188,7 +188,7 @@ PiCli will validate your ``.gitlab-ci.yml`` file to ensure that your pipeline is
 Well it looks like everything was accounted for. Except nothing was actually linted! We need to define our linting tool and which files that tool
 will take into account.
 
-First we add a new file ``piedpiper.d/default_vars.d/group_vars.d/python_lint.yml``
+First we add a new file ``piperci.d/default_vars.d/group_vars.d/python_lint.yml``
 
 Then we add the following contents to that file
 

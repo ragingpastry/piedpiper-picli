@@ -13,7 +13,7 @@ Creating a development environment
 A local development environment can be configured 
 using the following Ansible collection: https://github.com/AFCYBER-DREAM/ansible-collection-pidev/
 
-Follow these instructions to turn a new machine into a PiedPiper development environment:
+Follow these instructions to turn a new machine into a PiperCI development environment:
 
 .. code-block:: bash
 
@@ -49,7 +49,7 @@ You can also run the script with tox using the ``functional`` environment
 
 Lint
 ----
-PiedPiper is linted using PEP8 and Flake8. The lint environment in tox is configured to run ``flake8`` on the picli directory.
+PiperCI is linted using PEP8 and Flake8. The lint environment in tox is configured to run ``flake8`` on the picli directory.
 
 .. code-block:: bash
 

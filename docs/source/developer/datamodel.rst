@@ -10,7 +10,7 @@ Let's start from the initial execution point of PiCli.
 Let's pretend we are calling ``picli lint``. 
 
 :py:func:`~picli.command.lint.lint`. Lint will read the configuration file
-(defaults to ``piedpiper.d/pi_global_vars.yml`` and then lookup the 
+(defaults to ``piperci.d/pi_global_vars.yml`` and then lookup the 
 `lint` sequence from the base command module.
 
 .. autofunction:: picli.command.lint.lint
@@ -47,7 +47,7 @@ The PipeConfig object will create a BaseConfig object during initialization
 
 :py:class:`~picli.config.BaseConfig`. The Base configuration class which
 holds the main configuration for an invocation of PiCli. This is used
-to pass around configuration options defined in a ``piedpiper.d/pi_global_vars.yml``
+to pass around configuration options defined in a ``piperci.d/pi_global_vars.yml``
 file and other properties.
 
 .. autoclass:: picli.config.BaseConfig
