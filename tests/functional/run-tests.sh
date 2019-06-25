@@ -1,28 +1,16 @@
-#!/bin/sh
+#!/bin/bash
 
 errors=0
 for project in \
-    cpp_and_python_project \
-    cpp_project \
     python_project; do
 
     echo "Running picli on project $project in $(dirname $0)/$project"
-    picli --config $(dirname $0)/$project/piperci.d/pi_global_vars.yml --debug validate
+	pushd $(dirname $0)/$project
+    picli --debug run
     if [[ $? -ne 0 ]]; then
         errors=$((errors+1))
     fi
-    picli --config $(dirname $0)/$project/piperci.d/pi_global_vars.yml --debug style
-    if [[ $? -ne 0 ]]; then
-        errors=$((errors+1))
-    fi
-    picli --config $(dirname $0)/$project/piperci.d/pi_global_vars.yml --debug sast
-    if [[ $? -ne 0 ]]; then
-        errors=$((errors+1))
-    fi
-    picli --config $(dirname $0)/$project/piperci.d/pi_global_vars.yml --debug lint
-    if [[ $? -ne 0 ]]; then
-        errors=$((errors+1))
-    fi
+	popd
 done
 
 if [[ "${errors}" == 0 ]]; then

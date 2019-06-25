@@ -25,7 +25,7 @@ setup(name='piperci-picli',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
-      entry_point = {
+      entry_points={
         'console_scripts': ['picli=picli.__main__:main']
       },
       install_requires=requires,

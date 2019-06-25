@@ -33,7 +33,7 @@ stages:
     deps:
     resources:
       - name: noop
-        uri: /function/piperci-tox-controller
+        uri: /function/piperci-noop-gateway
     config:
       - resource: noop
         tox-command: tox
@@ -43,7 +43,7 @@ stages:
     deps:
     resources:
       - name: noop
-        uri: /function/piperci-noop-controller
+        uri: /function/piperci-noop-gateway
     config:
       - docker-file: "Dockerfile"
         resource: noop
